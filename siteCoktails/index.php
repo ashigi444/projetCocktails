@@ -54,7 +54,7 @@ include 'includes/nav.php';
     <h2>Navigation</h2>
     <p>Ici, on affichera la navigation dans les recettes etc</p>
 
-<?php } elseif ($page === 'recettes_favorites') { ?>
+<?php } elseif ($page === 'recettesFavorites') { ?>
     <h2>Recettes pr&eacute;f&eacute;r&eacute;es</h2>
     <p>ici on affichera les recettes favorites.</p>
 
@@ -63,8 +63,8 @@ include 'includes/nav.php';
     <?php
     $q = isset($_GET['q']) ? $_GET['q'] : '';
     if ($q !== '') { ?>
-        <p>Votre requ&ecirc;te&nbsp;: <strong>&apos;.<?php echo htmlspecialchars($q); ?>.&apos;</strong></p>
-        <p>Traitement de la requ&ecirc;te &agrave; impl&eacute;menter</p>'
+        <p>Votre requ&ecirc;te&nbsp;:&nbsp;&quot;<strong><?php echo htmlspecialchars($q); ?></strong>&quot;</p>
+        <p>Traitement de la requ&ecirc;te&nbsp;&agrave;&nbsp;impl&eacute;menter</p>
     <?php } else { ?>
         <p>Saisissez une requ&ecirc;te dans la barre de recherche en haut.</p>
     <?php } ?>
@@ -80,7 +80,7 @@ include 'includes/nav.php';
 
 <?php } elseif ($page === 'inscription') { ?>
     <h2>Inscription</h2>
-    <p>(form d&apos;inscription et enregistrement dans un fichier&nbsp;&agrave;&nbsp;impl&eacute;menter)</p>
+    <p>Form d&apos;inscription et enregistrement dans un fichier&nbsp;&agrave;&nbsp;impl&eacute;menter</p>
 
 <?php } else { ?>
     <h2>Page inconnue</h2>

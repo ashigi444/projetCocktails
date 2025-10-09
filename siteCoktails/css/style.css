@@ -3,16 +3,37 @@ body {
     font-size: 1em;
     color:black;
     background-color: white;
-    margin:0.3% 15%;
+    padding:3px 100px;
+}
+
+header, nav, main, footer{
+    max-width:1000px;
+    padding: 0 12px;
+}
+
+header, nav, footer{
+    background: #F7F7F7;
 }
 
 header, nav{
-    background: #F7F7F7;
-    padding: 1% 0;
-    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 7px
+}
+
+main {
+    border-top: 1px solid #DEDEDE;
+    border-bottom: 1px solid #DEDEDE;
+    background-color:white;
+    padding:20px 0;
+}
+
+footer {
+    padding: 5px 0;
+    text-align: right;
+    font-size:0.7em;
 }
 
 header h1 {
@@ -22,15 +43,9 @@ header h1 {
 nav ul{
     list-style:none;
     display:flex;
-    gap:7%;
+    gap:10px;
     margin:0;
     padding:0;
-}
-
-nav div {
-    display:flex;
-    align-items:center;
-    gap:7px;
 }
 
 nav a{
@@ -38,25 +53,14 @@ nav a{
     text-decoration: none;
 }
 
-nav a:hover {
+nav a:hover{
     border: 1px solid #3F3F3F;
-    border-radius: 15%;
+    border-radius: 5px;
+    padding:0 10px;
     background-color: dimgray;
     color:white;
-    padding: 0.5%;
 }
 
-main {
-    border-top: 1px solid #DEDEDE;
-    border-bottom: 1px solid #DEDEDE;
-    padding:2% 0;
-    background-color:white;
-}
-
-footer {
-    background: #F7F7F7;
-    padding: 0.5% 0;
-    width: 100%;
-    text-align: right;
-    font-size:0.7em;
+nav button:hover{
+    transform:translate3d(1px,1px,0);
 }
