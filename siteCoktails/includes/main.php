@@ -7,18 +7,13 @@
         </div>
     <?php }
 
-    if ($page === 'navigation'){
-        include 'includes/navigation.php';
-    } elseif ($page === 'recettesFavorites') {
-        include 'includes/favoriteRecipes.php';
-    } elseif ($page === 'recherche') {
-        include 'includes/search.php';
-    } elseif ($page === 'profil') {
-        include 'includes/profilSettings.php';
-    } elseif ($page === 'inscription') {
-        include 'includes/signUp.php';
-    } else { ?>
-        <h2>ERREUR&nbsp;404&nbsp;:&nbsp;Page inconnue</h2>
-        <p>La page demand&eacute;e n&apos;existe pas.</p>
-    <?php } ?>
+    if(isset($page)){
+        $file='includes/'.$page.'.php';
+        if(file_exists($file)){
+            include $file;
+        }else{ ?>
+            <h2>ERREUR&nbsp;404&nbsp;:&nbsp;Page inconnue</h2>
+            <p>La page demand&eacute;e n&apos;existe pas.</p>
+        <?php }
+    } ?>
 </main>
