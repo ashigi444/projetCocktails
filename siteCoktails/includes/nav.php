@@ -1,13 +1,13 @@
 <nav>
 <ul>
     <li><a href="index.php">Accueil</a></li>
-    <li><a href="index.php?page=recettesFavorites">Recettes</a></li>
+    <li><a href="index.php?page=favoriteRecipes">Recettes</a></li>
 </ul>
 <!-- formulaire de recherche -->
 <form method="get" action="index.php">
-    <input type="hidden" name="page" value="recherche">
+    <input type="hidden" name="page" value="search">
     <input type="text" name="q" placeholder="&quot;Jus de fruits&quot;"
-           value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ; ?>"
+           value="<?php echo isset($_GET['q']) ? $_GET['q'] : '' ; ?>"
     >
     <button type="submit">Rechercher</button>
 </form>
@@ -15,8 +15,8 @@
 <!-- zone de connexion -->
 <div>
 <?php if (isset($user) && !empty($user)) { ?>
-    <p><a href="index.php?page=profil">Profil&nbsp;:</a>
-    <strong><?php echo htmlspecialchars($user['login']) ; ?></strong></p>
+    <p><a href="index.php?page=profilSettings">Profil&nbsp;:</a>
+    <strong><?php echo $user['login'] ; ?></strong></p>
 <?php } ?>
 <form method="post" action="index.php">
 <?php if (isset($user) && !empty($user)) { ?>
@@ -31,7 +31,7 @@
 </form>
 
 <?php if (!isset($user) || empty($user)){ ?>
-    <a href="index.php?page=inscription">S&apos;inscrire</a>
+    <a href="index.php?page=signUp">S&apos;inscrire</a>
 <?php } ?>
 </div>
 </nav>
