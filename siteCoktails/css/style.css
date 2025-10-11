@@ -23,14 +23,17 @@ header, nav{
     gap: 7px
 }
 
-main {
-    border-top: 1px solid #DEDEDE;
+nav{
     border-bottom: 1px solid #DEDEDE;
+}
+
+main {
     background-color:white;
     padding:20px 0;
 }
 
 footer {
+    border-top: 1px solid #DEDEDE;
     padding: 5px 0;
     text-align: right;
     font-size:0.7em;
@@ -63,4 +66,17 @@ nav a:hover{
 
 nav button:hover{
     transform:translate3d(1px,1px,0);
+}
+
+.message{
+    background:#eef;
+    border:1px solid #99c;
+    padding:8px;
+    margin-bottom:10px;
+}
+
+form.form-signup label,
+form.form-signup button {
+    display: block;
+    padding:4px;
 }

@@ -2,9 +2,10 @@
 session_start();
 $messages = [];
 
-//pour l'instant, on connecte juste l'utilisateur sans verif de fichier etc
+// pour l'instant, on connecte juste l'utilisateur sans verifs de fichier etc
+// et sans verifs via expressions régulières (=regex)
 if (isset($_POST['action'])) {
-    if ($_POST['action'] === 'login') {
+    if ($_POST['action'] == 'login') {
         $login = isset($_POST['login']) ? trim($_POST['login']) : '';
         if ($login !== '') {
             $_SESSION['user'] = ['login' => $login];
@@ -12,7 +13,7 @@ if (isset($_POST['action'])) {
         } else {
             $messages[] = "Login vide : connexion impossible.";
         }
-    } elseif ($_POST['action'] === 'logout') {
+    } elseif ($_POST['action'] == 'logout') {
         unset($_SESSION['user']);
         $messages[] = "Vous êtes déconnecté.";
     }
@@ -22,7 +23,9 @@ if (isset($_POST['action'])) {
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
 // selection de page
-$page = isset($_GET['page']) ? $_GET['page'] : 'navigation';
+if(isset($_GET['page']) && !empty(trim($_GET['page']))){
+    $page = $_GET['page'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +41,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'navigation';
 <?php
 include 'includes/header.php';
 include 'includes/nav.php';
-
 
 // inclusion du main
 include 'includes/main.php';
