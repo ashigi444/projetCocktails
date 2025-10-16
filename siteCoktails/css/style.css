@@ -7,7 +7,7 @@ body {
 }
 
 header, nav, main, footer{
-    max-width:1000px;
+    max-width:1500px;
     padding: 0 12px;
 }
 
