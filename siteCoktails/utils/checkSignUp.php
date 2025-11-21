@@ -42,14 +42,18 @@ function checkSignUp($username, $password, $lastname,
     if ($valid_fields) { // Si tout est correct
         $valid_creation_account=!checkAccountAlreadyExists($username); // true si aucun compte n'existe pour ce username, false sinon
         if ($valid_creation_account) { // Si aucun compte n'existe
+            // Recuperer les favoris de session si existants
+            $sessionFavorites = isset($_SESSION['favoriteRecipes']) ? $_SESSION['favoriteRecipes'] : array();
+
             // création du fichier utilisateur
             $new_user = [
                 'username' => $username,
-                'password' => $password,
+                'password' => password_hash($password, PASSWORD_DEFAULT), // Hashage du mot de passe
                 'lastname' => $lastname,
                 'firstname' => $firstname,
                 'birthdate' => $birthdate,
                 'sexe' => $sexe,
+                'favoriteRecipes' => $sessionFavorites, // Transfert des favoris de session
             ];
             $users_print=var_export($new_user, true);
             $users_put="<?php\n\$infos_user=" . $users_print . ";\n?>";

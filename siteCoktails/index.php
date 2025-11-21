@@ -1,19 +1,37 @@
 <?php
 session_start();
 
+// gestion de favoris
+require_once 'utils/favorites.php';
+
 // creation des tableaux de messages pour l'utilisateur
 $messages=[];
 $messages_errors=[];
 
 // selection de page
 $page = (isset($_GET['page']) && !empty(trim($_GET['page']))) ? trim($_GET['page']) : 'accueil';
-// selection de l'action
-$action = isset($_POST['action']) ? $_POST['action'] : null;
+// selection de l'action (POST ou GET pour les favoris)
+$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : null);
 // verification du statut de connexion
 $statut_connexion=(isset($_SESSION['user']) && !empty($_SESSION['user'])) ? true : false;
 // traitement des actions et formulaires
 if (isset($action)) { // Si une action a ete demandee, on cherche de quelle action il s'agit
-    if($action == "logout" && $statut_connexion){ // Si c'est une deconnexion, on deconnecte
+    if($action == "toggleFavorite" && isset($_GET['recipeId'])){ // Gestion des favoris
+        $recipeId = intval($_GET['recipeId']);
+        $username = $statut_connexion ? $_SESSION['user']['username'] : null;
+        toggleFavorite($recipeId, $username);
+        // Redirection pour eviter la resoumission
+        $redirectPage = isset($_GET['page']) ? $_GET['page'] : 'navigation';
+        $redirectParams = '';
+        if (isset($_GET['aliment'])) {
+            $redirectParams .= '&aliment=' . urlencode($_GET['aliment']);
+        }
+        if (isset($_GET['search'])) {
+            $redirectParams .= '&search=' . urlencode($_GET['search']);
+        }
+        header('Location: index.php?page=' . $redirectPage . $redirectParams);
+        exit;
+    }else if($action == "logout" && $statut_connexion){ // Si c'est une deconnexion, on deconnecte
         unset($_SESSION['user']);
         $messages[] = "Vous&nbsp;&ecirc;tes d&eacute;connect&eacute;.";
 
@@ -74,6 +92,8 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
         if (isset($all_correct) && $all_correct) { // Si tout est correct, alors on creer la session
             $_SESSION['user'] = !empty($username) ? ['username' => $username] : null;
             session_regenerate_id(true);
+            // charger les favoris depuis le fichier utilisateur
+            loadFavoritesFromFile($username);
             $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
         }
     }else{ // Sinon (au cas ou l'action n'a pas ete trouvee)

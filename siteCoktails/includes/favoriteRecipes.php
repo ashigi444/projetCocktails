@@ -1,14 +1,76 @@
 <h2>Recettes pr&eacute;f&eacute;r&eacute;es</h2>
 
-<?php if (isset($user) && isset($user['username'])) { ?> <!-- Si il y a un utilisateur connecte -->
-    <!-- Si il y a au moins une recette favorites associee a cet utilisateur, alors on la/les affiche(nt)-->
-    <?php if(isset($user['favoriteRecipes']) && count($user['favoriteRecipes']) > 0) { ?>
-        <p>ici on affichera les recettes favorites.</p>
-        <!-- TODO (traitement de l'affichage des recettes favorites) -->
-    <?php }else{ ?> <!-- Sinon (c'est qu'il n'y en a pas), alors on affiche ce message -->
-        <p>Vous n&apos;avez aucune recettes dans vos favoris pour le moment...</p>
-        <p>Cliquez-<a href="index.php?page=navigation">ici</a> pour en ajouter...</p>
-    <?php } ?>
-<?php } else { ?> <!-- Sinon (c'est que l'utilisateur n'est pas connecte), alors on affiche ce message -->
-    <p>Veuillez vous connecter ou cr&eacute;er un compte pour acc&eacute;der aux recettes favorites.</p>
+<?php
+include_once('resources/Donnees.inc.php');
+require_once('utils/favorites.php');
+
+function getNomFichierImageFav($titre) {
+  $titre = strtolower($titre);
+  $titre = preg_replace('/[àáâãä]/', 'a', $titre);
+  $titre = preg_replace('/[éèêë]/', 'e', $titre);
+  $titre = preg_replace('/[ìíîï]/', 'i', $titre);
+  $titre = preg_replace('/[òóôõö]/', 'o', $titre);
+  $titre = preg_replace('/[ùúûü]/', 'u', $titre);
+  $titre = preg_replace('/[ç]/', 'c', $titre);
+  $titre = preg_replace('/[ñ]/', 'n', $titre);
+  $titre = preg_replace('/ /', '_', $titre);
+  $titre = preg_replace('/[^a-z_]/', '', $titre);
+
+  if (strlen($titre) > 0) {
+    $premiereLettre = $titre[0];
+    $titre[0] = strtoupper($premiereLettre);
+  }
+  return $titre . '.jpg';
+}
+
+// recup de l'username
+$username = isset($_SESSION['user']['username']) ? $_SESSION['user']['username'] : null;
+
+// recup les favoris
+$favorites = getFavorites($username);
+
+if (count($favorites) > 0) { ?>
+    <p>Vous avez <strong><?php echo count($favorites); ?></strong> recette(s) dans vos favoris.</p>
+
+    <div class="liste-recettes">
+    <?php
+    foreach ($favorites as $recipeId) {
+        if (!isset($Recettes[$recipeId])) {
+            continue;
+        }
+
+        $recette = $Recettes[$recipeId];
+        $nomImage = getNomFichierImageFav($recette['titre']);
+        $cheminImage = 'resources/Photos/' . $nomImage;
+
+        if (!file_exists($cheminImage)) {
+            $cheminImage = 'resources/Photos/default.jpg';
+        }
+        $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
+        ?>
+        <div class="cocktail-card">
+            <div class="card-header">
+                <span class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></span>
+                <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
+                    &#10084;
+                </a>
+            </div>
+            <div class="card-image">
+                <img src="<?php echo $cheminImage; ?>" alt="<?php echo htmlspecialchars($recette['titre']); ?>">
+            </div>
+            <ul class="ingredients-list">
+                <?php
+                foreach ($recette['index'] as $ing) {
+                    echo "<li>" . htmlspecialchars($ing) . "</li>";
+                }
+                ?>
+            </ul>
+        </div>
+        <?php
+    }
+    ?>
+    </div>
+<?php } else { ?>
+    <p>Vous n&apos;avez aucune recette dans vos favoris pour le moment...</p>
+    <p>Cliquez <a href="index.php?page=navigation">ici</a> pour parcourir les recettes et en ajouter.</p>
 <?php } ?>
