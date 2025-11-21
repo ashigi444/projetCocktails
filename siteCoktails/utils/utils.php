@@ -140,8 +140,6 @@ function checkBirthdateField($birthdate){
     $today=date("Y-m-d");
     list($year_today, $month_today, $day_today)=explode("-", $today);
     list($year,$month,$day)=explode('-',$birthdate);
-    echo $year.'-'.$month.'-'.$day; // DEBUG
-    echo $year_today.'-'.$month_today.'-'.$day_today; // DEBUG
 
     return (
         checkdate($month,$day,$year) &&
