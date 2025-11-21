@@ -78,6 +78,7 @@ nav button:hover, nav .buttonLinkPage:hover, nav .buttonSignUp:hover,
 nav button:focus, nav .buttonLinkPage:focus, nav .buttonSignUp:focus{
     border: 1px solid #3F3F3F;
     border-radius: 5px;
+    padding:0 10px;
     background-color: dimgray;
     color:white;
 }
@@ -119,4 +120,52 @@ nav .buttonSignUp{
 .form-settings label, .form-settings button{
     display:inline-block;
     padding:3px;
+}
+.liste-recettes {
+  text-align: left;
+}
+
+.cocktail-card {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  width: 200px;
+  height: 310px;
+  border: 2px solid black;
+  padding: 10px;
+  border-radius: 4px;
+  background: white;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.card-header {
+  align-items: center;
+  margin-bottom: 6px;
+
+}
+
+.cocktail-title {
+  font-weight: bold;
+  font-size:15px;
+}
+
+.card-image {
+  text-align:center;
+  margin: 8px 0 10px;
+}
+
+.card-image img {
+  width:90px;
+  height: auto;
+}
+
+.ingredients-list {
+  list-style: none;
+  padding:0;
+  margin:0;
+}
+
+.ingredients-list li {
+  font-size:14px;
+  margin: 2px 0;
 }
