@@ -1,4 +1,3 @@
-<!-- pied de page minimal -->
 <footer>
 <?php
 $annee = date('Y');

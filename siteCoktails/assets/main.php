@@ -1,5 +1,16 @@
 <main>
-    <?php if (!empty($messages)) { ?>
+    <?php
+    // Affichage des messages d'erreurs si il y en a
+    if (!empty($messages_errors)) { ?>
+    <div class="message message-errors">
+        <?php foreach ($messages_errors as $mess) { ?>
+            <p><?php echo $mess; ?></p>
+        <?php }?>
+    </div>
+
+    <?php }
+    // Affichage des messages classiques si il y en a
+    if (!empty($messages)) { ?>
         <div class="message">
             <?php foreach ($messages as $mess) { ?>
                 <p><?php echo $mess; ?></p>

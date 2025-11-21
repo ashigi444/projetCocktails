@@ -27,6 +27,17 @@ nav{
     border-bottom: 1px solid #DEDEDE;
 }
 
+nav div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items:flex-end;
+}
+
+nav .form-signin{
+    margin-bottom:10px;
+}
+
 main {
     background-color:white;
     padding:20px 0;
@@ -51,21 +62,33 @@ nav ul{
     padding:0;
 }
 
-nav a{
+nav button, nav a, nav .buttonSignUp, .buttonSub, .buttonUpdate{
     color: dimgray;
     text-decoration: none;
+    border: 1px solid lightgray;
+    padding: 1px 10px;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
-nav a:hover{
+.buttonSub:hover, .buttonUpdate:hover, .buttonSub:focus, .buttonUpdate:focus,
+nav button:hover, nav .buttonLinkPage:hover, nav .buttonSignUp:hover,
+nav button:focus, nav .buttonLinkPage:focus, nav .buttonSignUp:focus{
     border: 1px solid #3F3F3F;
     border-radius: 5px;
-    padding:0 10px;
     background-color: dimgray;
     color:white;
 }
 
-nav button:hover{
+.buttonSub:active, .buttonUpdate:active,
+nav button:active, nav .buttonLinkPage:active, nav .buttonSignUp:active{
     transform:translate3d(1px,1px,0);
+}
+
+nav .buttonSignUp{
+    margin:0 5px;
 }
 
 .message{
@@ -75,8 +98,25 @@ nav button:hover{
     margin-bottom:10px;
 }
 
-form.form-signup label,
-form.form-signup button {
+.message-errors{
+    background:#ffeaea;
+    border:1px solid #c99;
+}
+
+.error{
+    background-color:#ffe3e3;
+    border:1px solid #c99;
+    border-radius:5px;
+    padding:3px;
+    /*color:black;*/
+}
+
+.form-signup label, .form-signup button{
     display: block;
     padding:4px;
+}
+
+.form-settings label, .form-settings button{
+    display:inline-block;
+    padding:3px;
 }
