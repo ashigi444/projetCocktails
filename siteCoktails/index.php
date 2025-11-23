@@ -11,12 +11,18 @@ require_once "utils/utilsFavorites.php";
 $messages=[];
 $messagesErrors=[];
 
-// selection de page
+// selection de la recherche (si elle existe)
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// selection de la page (si elle existe)
 $page = (isset($_GET['page']) && !empty(trim($_GET['page']))) ? trim($_GET['page']) : 'accueil';
+
 // selection de l'action (POST ou GET pour les favoris)
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : null);
+
 // verification du statut de connexion
 $connectionStatus=(isset($_SESSION['user']) && !empty($_SESSION['user'])) ? true : false;
+
 // traitement des actions et formulaires
 if (isset($action)) { // Si une action a ete demandee, on cherche de quelle action il s'agit
     if($action == "toggleFavorite" && isset($_GET['recipeId'])){ // Gestion des favoris
@@ -172,10 +178,10 @@ if(isset($user)){
 </head>
 <body>
 <?php
-    include 'assets/header.php';
-    include 'assets/nav.php';
-    include 'assets/main.php';
-    include 'assets/footer.php';
-    ?>
+include 'assets/header.php';
+include 'assets/nav.php';
+include 'assets/main.php';
+include 'assets/footer.php';
+?>
 </body>
 </html>

@@ -16,42 +16,42 @@ if (count($favorites) > 0) { ?>
     <p>Vous avez <strong><?php echo count($favorites); ?></strong> recette(s) dans vos favoris.</p>
 
     <div class="liste-recettes">
-    <?php
-    foreach ($favorites as $recipeId) {
-        if (!isset($Recettes[$recipeId])) {
-            continue;
-        }
-
-        $recette = $Recettes[$recipeId];
-        $imageName = makeFilenameImage($recette['titre']);
-        $cheminImage = 'resources/Photos/' . $imageName;
-
-        if (!file_exists($cheminImage)) {
-            $cheminImage = 'resources/Photos/default.jpg';
-        }
-        $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
-        ?>
-        <div class="cocktail-card">
-            <div class="card-header">
-                <span class="cocktail-title"><?php echo $recette['titre']; ?></span>
-                <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
-                    &#10084;
-                </a>
-            </div>
-            <div class="card-image">
-                <img src="<?php echo $cheminImage; ?>" alt="<?php echo $recette['titre']; ?>">
-            </div>
-            <ul class="ingredients-list">
-                <?php
-                foreach ($recette['index'] as $ing) {
-                    echo "<li>" . $ing . "</li>";
-                }
-                ?>
-            </ul>
-        </div>
         <?php
-    }
-    ?>
+        foreach ($favorites as $recipeId) {
+            if (!isset($Recettes[$recipeId])) {
+                continue;
+            }
+
+            $recette = $Recettes[$recipeId];
+            $imageName = makeFilenameImage($recette['titre']);
+            $cheminImage = 'resources/Photos/' . $imageName;
+
+            if (!file_exists($cheminImage)) {
+                $cheminImage = 'resources/Photos/default.jpg';
+            }
+            $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
+            ?>
+            <div class="cocktail-card">
+                <div class="card-header">
+                    <span class="cocktail-title"><?php echo $recette['titre']; ?></span>
+                    <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
+                        &#10084;
+                    </a>
+                </div>
+                <div class="card-image">
+                    <img src="<?php echo $cheminImage; ?>" alt="<?php echo $recette['titre']; ?>">
+                </div>
+                <ul class="ingredients-list">
+                    <?php foreach ($recette['index'] as $ing) { ?>
+                        <li>
+                            <?php echo $ing; ?>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <?php
+        }
+        ?>
     </div>
 <?php } else { ?>
     <p>Vous n&apos;avez aucune recette dans vos favoris pour le moment...</p>

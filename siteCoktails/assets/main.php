@@ -3,11 +3,11 @@
     <?php
     // Affichage des messages d'erreurs si il y en a
     if (!empty($messagesErrors)) { ?>
-    <div class="message message-errors">
-        <?php foreach ($messagesErrors as $mess) { ?>
-            <p><?php echo $mess; ?></p>
-        <?php }?>
-    </div>
+        <div class="message message-errors">
+            <?php foreach ($messagesErrors as $mess) { ?>
+                <p><?php echo $mess; ?></p>
+            <?php }?>
+        </div>
 
     <?php }
     // Affichage des messages classiques si il y en a
