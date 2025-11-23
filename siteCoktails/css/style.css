@@ -304,3 +304,9 @@ fieldset legend {
     margin-right: 5px;
     transform: scale(1.1);
 }
+
+.form-settings .status-label {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+}

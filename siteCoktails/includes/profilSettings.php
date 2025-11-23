@@ -22,7 +22,7 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                            disabled="disabled"
                     />
                 </label>
-                <label for="statut">Statut de connexion&nbsp;:
+                <label for="statut" class="status-label">Statut de connexion&nbsp;:
                     <input type="color" id="statut" name="statut"
                             <?php if(isset($connectionStatus)) { ?>
                                 value="#00FF00"
