@@ -1,4 +1,92 @@
 <?php
+function replaceSearchByEntity($mode, $searchValue){
+    if($mode=='text'){
+        return safeTextSearch($searchValue);
+    }else if($mode=='input'){
+        return safeInputSearch($searchValue);
+    }
+    return $searchValue;
+}
+
+function safeTextSearch($searchValue){
+    $searchValue = str_replace('<', '&lt;', $searchValue);
+    $searchValue = str_replace('>', '&gt;', $searchValue);
+    $searchValue = str_replace('&', '&amp;', $searchValue);
+    return $searchValue;
+}
+
+function safeInputSearch($searchValue){
+    $searchValue = str_replace('"', '&quot;', $searchValue);
+    $searchValue = str_replace('\'', '&apos;', $searchValue);
+    return $searchValue;
+}
+
+function makeFilenameCorrected($filenameOriginal) {
+    $filename = trim($filenameOriginal);
+    // Remplace tout chaque lettre accentuee par la meme lettre sans accent
+    /*$filename = preg_replace('/[àÀâÂæÆáÁäÄãÃåÅāĀ]/', 'a',$filename);
+    $filename = preg_replace('/[éÉèÈêÊëËęĘėĖēĒ]/', 'e',$filename);
+    $filename = preg_replace('/[ÿŸ]/', 'y',$filename);
+    $filename = preg_replace('/[ûÛùÙüÜúÚūŪ]/', 'u',$filename);
+    $filename = preg_replace('/[îÎïÏìÌíÍįĮīĪ]/', 'i',$filename);
+    $filename = preg_replace('/[ôÔœŒöÖòÒóÓõÕōŌ]/', 'o',$filename);
+    $filename = preg_replace('/[çÇćĆčČ]/', 'c',$filename);
+    $filename = preg_replace('/[ñÑńŃ]/', 'n',$filename);*/
+    $filename = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $filename);
+    $filename = preg_replace('/ /', '_',$filename);
+    $filename = preg_replace('/[^a-zA-Z0-9_]/', '',$filename);
+
+    return $filename;
+}
+
+function makeFilenameImage($imageName) {
+    $imageName=makeFilenameCorrected(strtolower($imageName)); // Met tout le nom en minusucule
+    if (strlen($imageName) > 0) {
+        $imageName[0] = strtoupper($imageName[0]); // Met la premiere lettre en majuscule
+    }
+    return $imageName.'.jpg'; // return le nom de l'image suivi de .jpg
+}
+
+function make_filename_user($username){
+    return "dataUsers/user".makeFilenameCorrected($username).".php";
+}
+
+/**
+ *
+ *
+ * @param $username
+ * @return array|null
+ */
+function loadUserInfos($username){
+    $filename=make_filename_user($username);
+    if (!file_exists($filename)) {
+        return null;
+    }
+    $infos_user = null;
+    require $filename;
+    if (!isset($infos_user) || !is_array($infos_user) || empty($infos_user)) {
+        return null;
+    }
+    return $infos_user;
+}
+
+/**
+ *
+ *
+ * @param $username
+ * @param $infosUser
+ * @return void
+ */
+function saveUserInfos($username, $infosUser) {
+    $filename = make_filename_user($username);
+    if (!is_dir('dataUsers')) {
+        mkdir('dataUsers', 0755, true);
+    }
+    $users_print = var_export($infosUser, true);
+    $users_put = "<?php\n\$infos_user = " . $users_print . ";\n?>";
+    file_put_contents($filename, $users_put);
+}
+
 /**
  * Verifie si il existe deja un fichier utilisateur/compte pour le pseudo passe en parametre
  *
@@ -8,8 +96,7 @@
 function checkAccountAlreadyExists($username){
     if(!isset($username) || empty(trim($username)))
         return false;
-    $filename = 'dataUsers/user'.$username.'.php';
-    return file_exists($filename);
+    return file_exists(make_filename_user($username));
 }
 
 /**
@@ -25,21 +112,19 @@ function checkConnection($username, $password) {
     if(!isset($username) || empty(trim($username)) || !isset($password) || empty($password))
         return "undefined_infos";
 
-    $filename = 'dataUsers/user'.$username.'.php';
-    if (file_exists($filename)) { // Si le fichier existe
-        require $filename;
-        if (isset($infos_user)) {
-            $validityConnection = [
-                'username' => checkUsernameFile($username, $infos_user),
-                'password' => checkPasswordFile($password, $infos_user)
-            ];
-        }else{
-            $validityConnection = 'undefined_infos';
-        }
+    $infos_user=loadUserInfos($username);
+    if (isset($infos_user) && is_array($infos_user) && !empty($infos_user)) {
+        return [
+            'username' => checkUsernameFile($username, $infos_user),
+            'password' => checkPasswordFile($password, $infos_user)
+        ];
     }else{
-        $validityConnection = 'undefined_file';
+        if(checkAccountAlreadyExists($username)){
+            return "undefined_infos";
+        }else {
+            return 'undefined_file';
+        }
     }
-    return $validityConnection;
 }
 
 /**
@@ -47,18 +132,13 @@ function checkConnection($username, $password) {
  * qui, generalement à l'appel de la fonction, vient du fichier d'utilisateur
  *
  * @param string $username le nom d'utilisateur a verifier
- * @param string $infos_user le tableau d'informations sur l'utilisateur
+ * @param array $infosUser le tableau d'informations sur l'utilisateur
  * @return bool true si le nom d'utilisateur correspond dans le tableau, false sinon
  */
-function checkUsernameFile($username, $infos_user){
-    // On verifie quand même si login existent vraiment dans le tableau
-    if(isset($infos_user['username'])) {
-        // si le login est le bon alors true
-        if ($infos_user['username'] == $username) {
-            return true;
-        }
-    }
-    return false;
+function checkUsernameFile($username, $infosUser){
+    // On verifie quand même si login existe dans le tableau
+    return isset($infosUser['username']) &&
+        $infosUser['username'] == $username;
 }
 
 /**
@@ -66,41 +146,58 @@ function checkUsernameFile($username, $infos_user){
  * qui, generalement à l'appel de la fonction, vient du fichier d'utilisateur
  *
  * @param string $password le mot de passe a verifier
- * @param array $infos_user le tableau d'informations sur l'utilisateur
+ * @param array $infosUser le tableau d'informations sur l'utilisateur
  * @return bool true si le mot de passe correspond dans le tableau, false sinon
  */
-function checkPasswordFile($password, $infos_user){
-    // On verifie quand même si login existent vraiment dans le tableau
-    if(isset($infos_user['password'])) {
-        // si le login est le bon alors true
-        if (password_verify($password, $infos_user['password']) || $infos_user['password'] == $password) {
-            return true;
-        }
-    }
-    return false;
+function checkPasswordFile($password, $infosUser){
+    return isset($infosUser['password']) &&
+        password_verify($password, $infosUser['password']);
+}
+
+
+function checkLastnameFile($lastname, $infosUser){
+    return isset($infosUser['lastname']) &&
+        $lastname == $infosUser['lastname'];
+}
+
+function checkFirstnameFile($firstname, $infosUser){
+    return isset($infosUser['firstname']) &&
+        $firstname == $infosUser['firstname'];
+}
+
+function checkBirthdateFile($birthdate, $infosUser){
+    return isset($infosUser['birthdate']) &&
+        $birthdate == $infosUser['birthdate'];
+}
+
+function checkSexeFile($sexe, $infosUser){
+    return isset($infosUser['sexe']) &&
+        $sexe == $infosUser['sexe'];
 }
 
 // Toutes les fonctions de vérification de champ, à modifier avec des regex plus strictes
 /**
  * Verifie si le nom d'utilisateur est correct par rapport à une regex
  * le nom d'utilisateur provient generalement d'un champ rempli par l'utilisateur
+ * On n'accepte pas le nom d'utilisateur vide
  *
  * @param string $username le nom d'utilisateur a verifier
  * @return bool true si le nom d'utilisateur existe, n'est pas vide et passe la regex, false sinon
  */
 function checkUsernameField($username) {
-    return isset($username) && !empty(trim($username)) && preg_match("/.*/", $username);
+    return isset($username) && !empty(trim($username)) && preg_match("/^[a-zA-Z0-9]+$/", $username);
 }
 
 /**
  * Verifie si le mot de passe est correct par rapport à une regex
  * le mot de passe provient generalement d'un champ rempli par l'utilisateur
+ * On n'autorise pas le mot de passe vide.
  *
  * @param string $password le mot de passe a verifier
  * @return bool true si le mot de passe existe, n'est pas vide et passe la regex, false sinon
  */
 function checkPasswordField($password) {
-    return isset($password) && !empty(trim($password)) && preg_match("/.*/", $password);
+    return isset($password) && !empty(trim($password)) && preg_match("/^.+$/", $password);
 }
 
 /**
@@ -110,8 +207,9 @@ function checkPasswordField($password) {
  * @param string $lastname le nom a verifier
  * @return bool true si le nom existe, n'est pas vide et passe la regex, false sinon
  */
-function checkLastNameField($lastname){
-    return isset($lastname) && preg_match("/.*/", $lastname);
+function checkLastnameField($lastname){
+    return !isset($lastname) || empty(trim($lastname)) || preg_match(
+        "/^([a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+(([-']|( )*)[a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+)*)+$/", $lastname);
 }
 
 /**
@@ -121,8 +219,9 @@ function checkLastNameField($lastname){
  * @param string $firstname le prenom a verifier
  * @return bool true si le prenom existe, n'est pas vide et passe la regex, false sinon
  */
-function checkFirstNameField($firstname){
-    return isset($firstname) && preg_match("/.*/", $firstname);
+function checkFirstnameField($firstname){
+    return !isset($firstname) || empty(trim($firstname)) || preg_match(
+            "/^([a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+(([-']|( )*)[a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+)*)+$/", $firstname);
 }
 
 /**
@@ -138,15 +237,14 @@ function checkBirthdateField($birthdate){
         return true;
 
     $today=date("Y-m-d");
-    list($year_today, $month_today, $day_today)=explode("-", $today);
     list($year,$month,$day)=explode('-',$birthdate);
 
+    $date_of_18_years=($year+18)."-".$month."-".$day; // On a 18ans lorsque la date est
+                                                      // meme jour, meme mois, annee de naissance+18
     return (
         checkdate($month,$day,$year) &&
-        preg_match("/.*/", $year) &&
-        preg_match("/.*/", $month) &&
-        preg_match("/.*/", $day) &&
-        $birthdate<=$today
+        $date_of_18_years<=$today // Si la date des 18ans est inferieure ou egale a celle du jour
+                                  // c'est que l'utilisateur a plus que 18ans
     );
 }
 
@@ -159,27 +257,24 @@ function checkBirthdateField($birthdate){
  */
 function checkSexeField($sexe){
     // Vide autorisé car champ optionnel
-    return isset($sexe) && (empty(trim($sexe)) || preg_match("/^(male|female)$/", $sexe));
+    return !isset($sexe) || empty(trim($sexe)) || preg_match("/^(male|female)$/", $sexe);
 }
 
-/**
- * Verifie la validite du mot de passe par rapport au compte de username
- * Appelee lorsque l'utilisateur veut modifier son mot de pase,
- * pour verifier si "l'ancien" qu'il met correspond au mot de passe du compte
- *
- * @param string $username  le nom de l'utilisateur connecte
- * @param string $password  le mot de passe a verifier
- * @return bool true si le mdp correspond a celui du compte, false sinon
- */
-function checkRequestUpdatePassword($username, $password){
-    if(!isset($password) || empty($password)
-       || !checkPasswordField($password)){
-        return false;
+
+// Fonction pour obtenir tous les aliments de la hierarchie (y compris sous-categories)
+function getAlimentsHierarchie($nomAliment, $hierarchie)
+{
+    $liste = array();
+    $liste[] = $nomAliment;
+
+    if (isset($hierarchie[$nomAliment]['sous-categorie'])) {
+        foreach ($hierarchie[$nomAliment]['sous-categorie'] as $sousCat) {
+            $sousListe = getAlimentsHierarchie($sousCat, $hierarchie);
+            foreach ($sousListe as $element) {
+                $liste[] = $element;
+            }
+        }
     }
-    $valid_connection=checkConnection($username, $password);
-    if(is_array($valid_connection) && $valid_connection['username'] && $valid_connection['password']) {
-        return true;
-    }
-    return false;
+    return $liste;
 }
 ?>

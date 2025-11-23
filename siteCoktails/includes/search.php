@@ -1,43 +1,8 @@
 <h2>Recherche</h2>
 
 <?php
-include_once('resources/Donnees.inc.php');
-require_once('utils/favorites.php');
-
-function getNomFichierImageSearch($titre) {
-    $titre = strtolower($titre);
-    $titre = preg_replace('/[àáâãä]/', 'a', $titre);
-    $titre = preg_replace('/[éèêë]/', 'e', $titre);
-    $titre = preg_replace('/[ìíîï]/', 'i', $titre);
-    $titre = preg_replace('/[òóôõö]/', 'o', $titre);
-    $titre = preg_replace('/[ùúûü]/', 'u', $titre);
-    $titre = preg_replace('/[ç]/', 'c', $titre);
-    $titre = preg_replace('/[ñ]/', 'n', $titre);
-    $titre = preg_replace('/ /', '_', $titre);
-    $titre = preg_replace('/[^a-z_]/', '', $titre);
-
-    if (strlen($titre) > 0) {
-        $premiereLettre = $titre[0];
-        $titre[0] = strtoupper($premiereLettre);
-    }
-    return $titre . '.jpg';
-}
-
-// Fonction pour obtenir tous les aliments de la hierarchie (y compris sous-categories)
-function getAlimentsHierarchieSearch($nomAliment, $hierarchie) {
-    $liste = array();
-    $liste[] = $nomAliment;
-
-    if (isset($hierarchie[$nomAliment]['sous-categorie'])) {
-        foreach ($hierarchie[$nomAliment]['sous-categorie'] as $sousCat) {
-            $sousListe = getAlimentsHierarchieSearch($sousCat, $hierarchie);
-            foreach ($sousListe as $element) {
-                $liste[] = $element;
-            }
-        }
-    }
-    return $liste;
-}
+require_once('resources/Donnees.inc.php');
+require_once('utils/utils.php');
 
 // parsing recherche
 function parseSearchQuery($query) {
@@ -134,7 +99,7 @@ function getNomExactAliment($aliment, $hierarchie) {
 
 function recetteContientAliment($recette, $aliment, $hierarchie) {
 
-    $alimentsValides = getAlimentsHierarchieSearch($aliment, $hierarchie);
+    $alimentsValides = getAlimentsHierarchie($aliment, $hierarchie);
 
     foreach ($recette['index'] as $ing) {
         foreach ($alimentsValides as $valide) {
@@ -149,7 +114,7 @@ function recetteContientAliment($recette, $aliment, $hierarchie) {
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 if ($search !== '') {
-    echo '<p>Votre requ&ecirc;te&nbsp;:&nbsp;&quot;<strong>' . htmlspecialchars($search) . '</strong>&quot;</p>';
+    echo '<p>Votre requ&ecirc;te&nbsp;:&nbsp;&quot;<strong>' . replaceSearchByEntity("text", $search) . '</strong>&quot;</p>';
     $parsed = parseSearchQuery($search);
 
     if ($parsed['error'] !== null) {
@@ -252,7 +217,7 @@ if ($search !== '') {
                     $recette = $res['recette'];
                     $percentage = $res['percentage'];
 
-                    $nomImage = getNomFichierImageSearch($recette['titre']);
+                    $nomImage = makeFilenameImage($recette['titre']);
                     $cheminImage = 'resources/Photos/' . $nomImage;
 
                     if (!file_exists($cheminImage)) {

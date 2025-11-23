@@ -1,39 +1,6 @@
 <?php
-include_once('resources/Donnees.inc.php');
-require_once('utils/favorites.php');
-
-function getAlimentsHierarchie($nomAliment, $hierarchie) {
-  $liste = array();
-  $liste[] = $nomAliment;
-
-  if (isset($hierarchie[$nomAliment]['sous-categorie'])) {
-    foreach ($hierarchie[$nomAliment]['sous-categorie'] as $sousCat) {
-      $sousListe = getAlimentsHierarchie($sousCat,$hierarchie);
-      foreach ($sousListe as $element) {
-        $liste[] = $element;
-      }
-    }
-  }
-  return $liste;
-}
-function getNomFichierImage($titre) {
-  $titre = strtolower($titre);
-  $titre = preg_replace('/[àáâãä]/', 'a',$titre);
-  $titre = preg_replace('/[éèêë]/', 'e',$titre);
-  $titre = preg_replace('/[ìíîï]/', 'i',$titre);
-  $titre = preg_replace('/[òóôõö]/', 'o',$titre);
-  $titre = preg_replace('/[ùúûü]/', 'u',$titre);
-  $titre = preg_replace('/[ç]/', 'c',$titre);
-  $titre = preg_replace('/[ñ]/', 'n',$titre);
-  $titre = preg_replace('/ /', '_',$titre);
-  $titre = preg_replace('/[^a-z_]/', '',$titre);
-
-  if (strlen($titre) > 0) {
-    $premiereLettre = $titre[0];
-    $titre[0] = strtoupper($premiereLettre);
-  }
-  return $titre.'.jpg';
-}
+require_once('resources/Donnees.inc.php');
+require_once('utils/utils.php');
 
 if (isset($_GET['aliment'])) {
   $alimentCourant = $_GET['aliment'];
@@ -71,7 +38,7 @@ $ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
     }
 
     if ($afficherRecette) {
-      $nomImage = getNomFichierImage($recette['titre']);
+      $nomImage = makeFilenameImage($recette['titre']);
       $cheminImage = 'resources/Photos/'.$nomImage;
 
       if (!file_exists($cheminImage)) {
@@ -90,18 +57,18 @@ $ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
       ?>
       <div class="cocktail-card">
         <div class="card-header">
-          <span class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></span>
+          <span class="cocktail-title"><?php echo $recette['titre']; ?></span>
           <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
             <?php echo $heartSymbol; ?>
           </a>
         </div>
         <div class="card-image">
-          <img src="<?php echo $cheminImage; ?>" alt="<?php echo htmlspecialchars($recette['titre']); ?>">
+          <img src="<?php echo $cheminImage; ?>" alt="<?php echo $recette['titre']; ?>">
         </div>
         <ul class="ingredients-list">
           <?php
           foreach($recette['index'] as $ing) {
-            echo "<li>" . htmlspecialchars($ing) . "</li>";
+            echo "<li>" . $ing . "</li>";
           }
           ?>
         </ul>

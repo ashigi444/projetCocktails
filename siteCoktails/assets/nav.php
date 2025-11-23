@@ -30,10 +30,15 @@
 
 
     <!-- formulaire de recherche -->
+    <?php require_once 'utils/utils.php' ?>
     <form method="get" action="index.php">
         <label for="search">
-            <input id="search" type="text" name="search" placeholder="&quot;Jus de fruits&quot;"
-                   value="<?php echo isset($_GET['search']) ? $_GET['search'] : '' ; ?>"
+            <?php
+            $search_value = isset($_GET['search']) ? $_GET['search'] : '';
+            ?>
+            <input id="search" type="text" name="search"
+                   placeholder="&quot;Jus de fruits&quot;"
+                   value="<?php echo replaceSearchByEntity("input", $search_value); ?>"
             />
         </label>
         <button type="submit" name="page" value="search">Rechercher</button>

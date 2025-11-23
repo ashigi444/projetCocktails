@@ -1,8 +1,11 @@
 <?php
 session_start();
+if(!isset($_COOKIE['user'])) {
+    setcookie("user", "", time() + 3600 * 24); // cookies qui reste 24heures pour le moment
+}
 
-// gestion de favoris
-require_once 'utils/favorites.php';
+require_once "utils/utils.php";
+require_once "utils/utilsFavorites.php";
 
 // creation des tableaux de messages pour l'utilisateur
 $messages=[];
@@ -17,36 +20,72 @@ $statut_connexion=(isset($_SESSION['user']) && !empty($_SESSION['user'])) ? true
 // traitement des actions et formulaires
 if (isset($action)) { // Si une action a ete demandee, on cherche de quelle action il s'agit
     if($action == "toggleFavorite" && isset($_GET['recipeId'])){ // Gestion des favoris
+        // gestion de favoris
         $recipeId = intval($_GET['recipeId']);
         $username = $statut_connexion ? $_SESSION['user']['username'] : null;
         toggleFavorite($recipeId, $username);
         // Redirection pour eviter la resoumission
         $redirectPage = isset($_GET['page']) ? $_GET['page'] : 'navigation';
-        $redirectParams = '';
-        if (isset($_GET['aliment'])) {
-            $redirectParams .= '&aliment=' . urlencode($_GET['aliment']);
-        }
-        if (isset($_GET['search'])) {
-            $redirectParams .= '&search=' . urlencode($_GET['search']);
-        }
-        header('Location: index.php?page=' . $redirectPage . $redirectParams);
-        exit;
+
     }else if($action == "logout" && $statut_connexion){ // Si c'est une deconnexion, on deconnecte
         unset($_SESSION['user']);
         $messages[] = "Vous&nbsp;&ecirc;tes d&eacute;connect&eacute;.";
 
-    }else if($action == "wantUpdatePassword" && $statut_connexion){ // Si c'est une demande de modification
-        // du mot de passe, on verifie si l'ancien mot de passe saisit est correct.
-        require "utils/utils.php";
-        $act_username=isset($_SESSION['user']['username']) ? $_SESSION['user']['username'] : "";
-        $old_password=isset($_POST['oldPassword']) ? $_POST['oldPassword'] : "";
-        $is_valid_old_password=checkRequestUpdatePassword($act_username,$old_password);
-        $class_password = (isset($is_valid_old_password) && !$is_valid_old_password) ? "error" : null;
-        if (isset($page) && $page != "profilSettings") $page = "profilSettings";
-
-    }else if($action == 'update' && $statut_connexion){ // Si c'est une mise a jour du profil,
+    }else if(strstr($action, "update") && $statut_connexion){ // Si c'est une mise a jour du profil,
         require "utils/checkUpdate.php";
-        // TODO (pas encore implementé)
+
+        $new_lastname=isset($_POST['new_lastname']) ? $_POST['new_lastname'] : null;
+        $new_firstname=isset($_POST['new_firstname']) ? $_POST['new_firstname'] : null;
+        $new_birthdate=isset($_POST['new_birthdate']) ? $_POST['new_birthdate'] : null;
+        $new_sexe=isset($_POST['new_sexe']) ? $_POST['new_sexe'] : null;
+
+        $class_fields = [];
+        $allows_update=false;
+        $result = [];
+
+        if($action=="updateLastname"){
+            $result=checkUpdateLastname($new_lastname);
+            $allows_update=$result['allows_update'];
+            $messages=$result['messages'];
+            $messages_errors=$result['messages_errors'];
+            if($allows_update){
+                applyUpdateFile('lastname', $new_lastname);
+            }else{
+                $class_fields['lastname']=$result['class_fields'];
+            }
+        }else if($action=="updateFirstname"){
+            $result=checkUpdateFirstname($new_firstname);
+            $allows_update=$result['allows_update'];
+            $messages=$result['messages'];
+            $messages_errors=$result['messages_errors'];
+            if($allows_update){
+                applyUpdateFile('firstname', $new_firstname);
+            }else{
+                $class_fields['firstname']=$result['class_fields'];
+            }
+        }else if($action=="updateBirthdate"){
+            $result=checkUpdateBirthdate($new_birthdate);
+            $allows_update=$result['allows_update'];
+            $messages=$result['messages'];
+            $messages_errors=$result['messages_errors'];
+            if($allows_update){
+                applyUpdateFile('birthdate', $new_birthdate);
+            }else{
+                $class_fields['birthdate']=$result['class_fields'];
+            }
+        }else if($action=="updateSexe"){
+            $result=checkUpdateSexe($new_sexe);
+            $allows_update=$result['allows_update'];
+            $messages=$result['messages'];
+            $messages_errors=$result['messages_errors'];
+            if($allows_update){
+                applyUpdateFile('sexe', $new_sexe);
+            }else{
+                $class_fields['sexe']=$result['class_fields'];
+            }
+        }else{
+            $messages_errors[] = "Une erreur est survenue.";
+        }
 
     }else if(($action == "signup" || $action == "signin") && !$statut_connexion){ // Si c'est une connexion ou inscription
         // On recupere les variables necessaires au traitement
@@ -90,10 +129,15 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
 
         // Validation de la connexion (commune à signup + signin)
         if (isset($all_correct) && $all_correct) { // Si tout est correct, alors on creer la session
-            $_SESSION['user'] = !empty($username) ? ['username' => $username] : null;
             session_regenerate_id(true);
-            // charger les favoris depuis le fichier utilisateur
-            loadFavoritesFromFile($username);
+            // recupere toutes les infos de session utilisateur
+            $_SESSION['user']['username'] = !empty($username) ? $username : null;
+            $_SESSION['user']['lastname'] = !empty($lastname) ? $lastname : null;
+            $_SESSION['user']['firstname'] = !empty($firstname) ? $firstname : null;
+            $_SESSION['user']['birthdate'] = !empty($birthdate) ? $birthdate : null;
+            $_SESSION['user']['sexe'] = !empty($sexe) ? $sexe : null;
+            loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
+            $_COOKIE['user'] = $_SESSION['user']; // recopie les infos de session dans le cookie
             $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
         }
     }else{ // Sinon (au cas ou l'action n'a pas ete trouvee)

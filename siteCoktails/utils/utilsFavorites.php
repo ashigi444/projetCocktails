@@ -1,4 +1,6 @@
 <?php
+require_once('utils/utils.php');
+
 /**
  * Fonctions de gestion des recettes favorites
  * La session est la source de verite, le fichier sert a la persistance
@@ -107,7 +109,7 @@ function saveFavorites($favorites, $username = null) {
  * @return bool True si la sauvegarde a reussi
  */
 function saveFavoritesToFile($favorites, $username) {
-    $filename = 'dataUsers/user' . $username . '.php';
+    $filename = make_filename_user($username);
 
     if (!file_exists($filename)) {
         return false;
@@ -141,7 +143,7 @@ function saveFavoritesToFile($favorites, $username) {
  * @param string $username Nom d'utilisateur
  */
 function loadFavoritesFromFile($username) {
-    $filename = 'dataUsers/user' . $username . '.php';
+    $filename=make_filename_user($username);
 
     if (file_exists($filename)) {
         // Charger avec file_get_contents pour eviter le cache

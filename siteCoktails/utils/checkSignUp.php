@@ -31,13 +31,13 @@ function checkSignUp($username, $password, $lastname,
 
     $valid_username=checkUsernameField($username); // true si username correct, false sinon
     $valid_password=checkPasswordField($password); // true si password correct, false sinon
-    $valid_lastname=checkLastNameField($lastname); // true si lastname correct, false sinon
-    $valid_firstname=checkFirstNameField($firstname); // true si firstname correct, false sinon
+    $valid_lastname=checkLastnameField($lastname); // true si lastname correct, false sinon
+    $valid_firstname=checkFirstnameField($firstname); // true si firstname correct, false sinon
     $valid_birthdate=checkBirthdateField($birthdate); // true si birthdate correct, false sinon
     $valid_sexe=checkSexeField($sexe); // true si sexe correct, false sinon
     $valid_fields = $valid_username && $valid_password &&
-                    $valid_lastname && $valid_firstname &&
-                    $valid_birthdate && $valid_sexe; // true si tout est correct, false sinon
+        $valid_lastname && $valid_firstname &&
+        $valid_birthdate && $valid_sexe; // true si tout est correct, false sinon
 
     if ($valid_fields) { // Si tout est correct
         $valid_creation_account=!checkAccountAlreadyExists($username); // true si aucun compte n'existe pour ce username, false sinon
@@ -45,7 +45,7 @@ function checkSignUp($username, $password, $lastname,
             // Recuperer les favoris de session si existants
             $sessionFavorites = isset($_SESSION['favoriteRecipes']) ? $_SESSION['favoriteRecipes'] : array();
 
-            // création du fichier utilisateur
+            // creation du fichier utilisateur
             $new_user = [
                 'username' => $username,
                 'password' => password_hash($password, PASSWORD_DEFAULT), // Hashage du mot de passe
@@ -55,23 +55,18 @@ function checkSignUp($username, $password, $lastname,
                 'sexe' => $sexe,
                 'favoriteRecipes' => $sessionFavorites, // Transfert des favoris de session
             ];
-            $users_print=var_export($new_user, true);
-            $users_put="<?php\n\$infos_user=" . $users_print . ";\n?>";
 
-            if (!is_dir('dataUsers')) {
-                mkdir('dataUsers', 0755, true);
-            }
-            $filename="dataUsers/user" . $username . ".php";
-            file_put_contents($filename, $users_put);
+            // Ecriture via la fonction utilitaire
+            saveUserInfos($username, $new_user);
 
-            // On vérifie qu'on retrouve bien l'utilisateur
+            // On verifie qu'on retrouve bien l'utilisateur
             $verify = checkConnection($username, $password);
             if (is_array($verify)
                 && isset($verify['username']) && isset($verify['password'])
                 && $verify['username'] && $verify['password']) {
 
                 $all_correct=true;
-                $page='accueil'; // après signup OK, tu pourras même laisser index gérer la redirection
+                $page='accueil'; // apres une connexion valide, on redirige vers l'accueil
                 $messages[]="Compte cr&eacute;&eacute; avec succ&egrave;s.";
             } else {
                 $messages_errors[]=
@@ -80,13 +75,13 @@ function checkSignUp($username, $password, $lastname,
                 $page='signUp';
             }
 
-        } else { // sinon -> si il existe deja un compte pour ce pseudo
+        } else { // sinon (si il existe deja un compte pour ce pseudo)
             $messages_errors[] = "Cet identifiant existe d&eacute;j&agrave;.";
             $class_fields['signupForm']['username'] = 'error';
             $value_fields['signupForm']['username'] = $username;
             $page = 'signUp';
         }
-    } else { // Sinon -> Si au moins 1 champ n'est pas correct
+    } else { // Sinon (si au moins 1 champ n'est pas correct)
         $messages_errors[] = "Impossible de cr&eacute;er le compte&nbsp;!";
 
         if (!$valid_username) {
@@ -99,9 +94,7 @@ function checkSignUp($username, $password, $lastname,
         if (!$valid_password) {
             $class_fields['signupForm']['password']="error";
             $messages_errors[]="Le mot de passe est invalide.";
-        }/*else{
-            $value_fields['signupForm']['password']=$password; // -> A voir si on autorise la recopie du mot de passe
-        }*/
+        }
 
         if (!$valid_firstname) {
             $class_fields['signupForm']['firstname']="error";
