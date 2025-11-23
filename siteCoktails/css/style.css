@@ -363,18 +363,24 @@ fieldset legend {
 
 .breadcrumb-path {
     background: #fff;
-    padding: 10px;
+    padding: 5px 5px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
     font-size: 0.95em;
 }
 
-.breadcrumb-path a {
+.p-breadcrumb-path{
+    padding: 2px 0;
+    margin: 2px 0;
+    display: inline;
+}
+
+.a-breadcrumb-path {
     color: #3498db;
     text-decoration: none;
 }
 
-.breadcrumb-path a:hover {
+.a-breadcrumb-path{
     text-decoration: underline;
 }
 
