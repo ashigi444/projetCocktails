@@ -124,9 +124,10 @@ if ($search !== '') {
 
                     $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=search&search=' . urlencode($search);
                     ?>
+                    <?php $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $id; ?>
                     <div class="cocktail-card">
                         <div class="card-header">
-                            <span class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></span>
+                            <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></a>
                             <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
                                 <?php echo $heartSymbol; ?>
                             </a>

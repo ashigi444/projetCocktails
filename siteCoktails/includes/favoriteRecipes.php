@@ -30,10 +30,11 @@ if (count($favorites) > 0) { ?>
                 $cheminImage = 'resources/Photos/default.jpg';
             }
             $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
+            $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $recipeId;
             ?>
             <div class="cocktail-card">
                 <div class="card-header">
-                    <span class="cocktail-title"><?php echo $recette['titre']; ?></span>
+                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></a>
                     <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
                         &#10084;
                     </a>

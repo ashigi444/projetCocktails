@@ -66,7 +66,7 @@ function checkSignUp($username, $password, $lastname,
                 && $verify['username'] && $verify['password']) {
 
                 $allCorrect=true;
-                $page='accueil'; // apres une connexion valide, on redirige vers l'accueil
+                $page='navigation'; // apres une connexion valide, on redirige vers la navigation
                 $messages[]="Compte cr&eacute;&eacute; avec succ&egrave;s.";
             } else {
                 $messagesErrors[]=

@@ -2,9 +2,8 @@
 <nav>
     <!-- boutons de navigation entre pages -->
     <ul> <?php
-        $links['Accueil']=['ref1' => 'index.php', 'ref2' => 'index.php?page=accueil'];
-        $links['Navigation']='index.php?page=navigation';
-        $links['Favoris']='index.php?page=favoriteRecipes';
+        $links['Navigation']=['ref1' => 'index.php', 'ref2' => 'index.php?page=navigation'];
+        $links['Recettes &#10084;']='index.php?page=favoriteRecipes';
 
         $actualLink=isset($page)?'index.php?page='.$page : 'index.php';
         foreach($links as $nameLink=>$link){

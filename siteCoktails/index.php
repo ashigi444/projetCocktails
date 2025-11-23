@@ -15,7 +15,8 @@ $messagesErrors=[];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // selection de la page (si elle existe)
-$page = (isset($_GET['page']) && !empty(trim($_GET['page']))) ? trim($_GET['page']) : 'accueil';
+// Par defaut, la page est 'navigation' avec Aliment comme aliment courant (cf. sujet)
+$page = (isset($_GET['page']) && !empty(trim($_GET['page']))) ? trim($_GET['page']) : 'navigation';
 
 // selection de l'action (POST ou GET pour les favoris)
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : null);
@@ -159,12 +160,12 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
 // selection d'utilisateur si connecte
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
-// suppression des messages d'erreurs avec redirection vers l'accueil si l'utilisateur vient de creer son compte.
+// suppression des messages d'erreurs avec redirection vers la navigation si l'utilisateur vient de creer son compte.
 //   permet d'eviter une erreur ainsi qu'une redirection sur le formulaire d'inscription si actualisation de la page apres creation du compte...
 if(isset($user)){
     if(($page=="signUp" || (isset($action) && $action=="signup"))) {
         $messagesErrors = []; // Reset le tableau des erreurs
-        $page = 'accueil'; // Redirige l'utilisateur sur la page d'accueil
+        $page = 'navigation'; // Redirige l'utilisateur sur la navigation
     }
 }
 ?>
