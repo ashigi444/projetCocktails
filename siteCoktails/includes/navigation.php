@@ -3,16 +3,16 @@ require_once('resources/Donnees.inc.php');
 require_once('utils/utils.php');
 
 if (isset($_GET['aliment'])) {
-  $alimentCourant = $_GET['aliment'];
+  $currentIngredient = $_GET['aliment'];
 } else {
-  $alimentCourant ='Aliment';
+  $currentIngredient ='Aliment';
 }
 
-if (!array_key_exists($alimentCourant, $Hierarchie)) {
-  $alimentCourant = 'Aliment';
+if (!array_key_exists($currentIngredient, $Hierarchie)) {
+  $currentIngredient = 'Aliment';
 }
 
-$ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
+$ingredientsValides = getIngredientsHierarchy($currentIngredient,$Hierarchie);
 ?>
 
 <h3>Liste des cocktails</h3>
@@ -21,12 +21,12 @@ $ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
   foreach ($Recettes as $id =>$recette) {
     $afficherRecette = false;
 
-    if ($alimentCourant == 'Aliment') {
+    if ($currentIngredient == 'Aliment') {
       $afficherRecette = true;
     } else {
       foreach ($recette['index'] as $ing) {
-        foreach ($ingredientsValides as $valide) {
-          if ($ing == $valide) {
+        foreach ($ingredientsValides as $validIngredient) {
+          if ($ing == $validIngredient) {
             $afficherRecette = true;
             break;
           }
@@ -38,8 +38,8 @@ $ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
     }
 
     if ($afficherRecette) {
-      $nomImage = makeFilenameImage($recette['titre']);
-      $cheminImage = 'resources/Photos/'.$nomImage;
+      $imageName = makeFilenameImage($recette['titre']);
+      $cheminImage = 'resources/Photos/'.$imageName;
 
       if (!file_exists($cheminImage)) {
         $cheminImage = 'resources/Photos/default.jpg';
@@ -51,8 +51,8 @@ $ingredientsValides = getAlimentsHierarchie($alimentCourant,$Hierarchie);
       $heartSymbol = $estFavori ? '&#10084;' : '&#9825;';
 
       $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=navigation';
-      if ($alimentCourant !== 'Aliment') {
-        $toggleUrl .= '&aliment=' . urlencode($alimentCourant);
+      if ($currentIngredient !== 'Aliment') {
+        $toggleUrl .= '&aliment=' . urlencode($currentIngredient);
       }
       ?>
       <div class="cocktail-card">

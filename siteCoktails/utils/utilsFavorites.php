@@ -109,7 +109,7 @@ function saveFavorites($favorites, $username = null) {
  * @return bool True si la sauvegarde a reussi
  */
 function saveFavoritesToFile($favorites, $username) {
-    $filename = make_filename_user($username);
+    $filename = makeFilenameUser($username);
 
     if (!file_exists($filename)) {
         return false;
@@ -143,7 +143,7 @@ function saveFavoritesToFile($favorites, $username) {
  * @param string $username Nom d'utilisateur
  */
 function loadFavoritesFromFile($username) {
-    $filename=make_filename_user($username);
+    $filename=makeFilenameUser($username);
 
     if (file_exists($filename)) {
         // Charger avec file_get_contents pour eviter le cache

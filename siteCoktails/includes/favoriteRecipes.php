@@ -23,8 +23,8 @@ if (count($favorites) > 0) { ?>
         }
 
         $recette = $Recettes[$recipeId];
-        $nomImage = makeFilenameImage($recette['titre']);
-        $cheminImage = 'resources/Photos/' . $nomImage;
+        $imageName = makeFilenameImage($recette['titre']);
+        $cheminImage = 'resources/Photos/' . $imageName;
 
         if (!file_exists($cheminImage)) {
             $cheminImage = 'resources/Photos/default.jpg';

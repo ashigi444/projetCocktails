@@ -81,31 +81,31 @@ function parseSearchQuery($query) {
 }
 
 
-function alimentExistsDansHierarchie($aliment, $hierarchie) {
+function ingredientExistsInHierarchy($ingredient, $hierarchie) {
     foreach (array_keys($hierarchie) as $key) {
-        if (strcasecmp($key, $aliment) === 0) {
+        if (strcasecmp($key, $ingredient) === 0) {
             return true;
         }
     }
     return false;
 }
-function getNomExactAliment($aliment, $hierarchie) {
+function getExactIngredientName($ingredient, $hierarchie) {
     foreach (array_keys($hierarchie) as $key) {
-        if (strcasecmp($key, $aliment) === 0) {
+        if (strcasecmp($key, $ingredient) === 0) {
             return $key;
         }
     }
-    return $aliment;
+    return $ingredient;
 }
 
 
-function recetteContientAliment($recette, $aliment, $hierarchie) {
+function recipeContainsIngredient($recette, $ingredient, $hierarchie) {
 
-    $alimentsValides = getAlimentsHierarchie($aliment, $hierarchie);
+    $validIngredients = getIngredientsHierarchy($ingredient, $hierarchie);
 
     foreach ($recette['index'] as $ing) {
-        foreach ($alimentsValides as $valide) {
-            if (strcasecmp($ing, $valide) === 0) {
+        foreach ($validIngredients as $validIngredient) {
+            if (strcasecmp($ing, $validIngredient) === 0) {
                 return true;
             }
         }
@@ -125,18 +125,18 @@ if ($search !== '') {
         $wantedRecognized = array();
         $unwantedRecognized = array();
         $notRecognized = array();
-        foreach ($parsed['wanted'] as $aliment) {
-            if (alimentExistsDansHierarchie($aliment, $Hierarchie)) {
-                $wantedRecognized[] = getNomExactAliment($aliment, $Hierarchie);
+        foreach ($parsed['wanted'] as $ingredient) {
+            if (ingredientExistsInHierarchy($ingredient, $Hierarchie)) {
+                $wantedRecognized[] = getExactIngredientName($ingredient, $Hierarchie);
             } else {
-                $notRecognized[] = $aliment;
+                $notRecognized[] = $ingredient;
             }
         }
-        foreach ($parsed['unwanted'] as $aliment) {
-            if (alimentExistsDansHierarchie($aliment, $Hierarchie)) {
-                $unwantedRecognized[] = getNomExactAliment($aliment, $Hierarchie);
+        foreach ($parsed['unwanted'] as $ingredient) {
+            if (ingredientExistsInHierarchy($ingredient, $Hierarchie)) {
+                $unwantedRecognized[] = getExactIngredientName($ingredient, $Hierarchie);
             } else {
-                $notRecognized[] = $aliment;
+                $notRecognized[] = $ingredient;
             }
         }
 
@@ -165,14 +165,14 @@ if ($search !== '') {
 
             foreach ($Recettes as $id => $recette) {
                 $score = 0;
-                foreach ($wantedRecognized as $aliment) {
-                    if (recetteContientAliment($recette, $aliment, $Hierarchie)) {
+                foreach ($wantedRecognized as $ingredient) {
+                    if (recipeContainsIngredient($recette, $ingredient, $Hierarchie)) {
                         $score++;
                     }
                 }
 
-                foreach ($unwantedRecognized as $aliment) {
-                    if (!recetteContientAliment($recette, $aliment, $Hierarchie)) {
+                foreach ($unwantedRecognized as $ingredient) {
+                    if (!recipeContainsIngredient($recette, $ingredient, $Hierarchie)) {
                         $score++;
                     }
                 }
@@ -219,8 +219,8 @@ if ($search !== '') {
                     $recette = $res['recette'];
                     $percentage = $res['percentage'];
 
-                    $nomImage = makeFilenameImage($recette['titre']);
-                    $cheminImage = 'resources/Photos/' . $nomImage;
+                    $imageName = makeFilenameImage($recette['titre']);
+                    $cheminImage = 'resources/Photos/' . $imageName;
 
                     if (!file_exists($cheminImage)) {
                         $cheminImage = 'resources/Photos/default.jpg';

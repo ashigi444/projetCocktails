@@ -13,7 +13,7 @@ require_once "utils/utils.php";
  * @param string $lastname le nom saisit par l'utilisateur
  * @param string $firstname le prenom saisit par l'utilisateur
  * @param string $birthdate la date d'anniversaire saisit par l'utilisateur
- * @param string $sexe le sexe coche par l'utilisateur
+ * @param string $gender le sexe coche par l'utilisateur
  * @return array le tableau qui contient tout les resultats,
  *       -  le booleen qui indique la validite de la creation du compte,
  *       -  les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
@@ -21,43 +21,43 @@ require_once "utils/utils.php";
  *       -  etc...
  */
 function checkSignUp($username, $password, $lastname,
-                     $firstname, $birthdate, $sexe){
+                     $firstname, $birthdate, $gender){
     $messages = [];
-    $messages_errors = [];
-    $all_correct = false;
+    $messagesErrors = [];
+    $allCorrect = false;
     $page = 'signUp';
-    $value_fields = ['signinForm' => [],'signupForm' => []];
-    $class_fields = ['signinForm' => [], 'signupForm' => []];
+    $valueFields = ['signinForm' => [],'signupForm' => []];
+    $classFields = ['signinForm' => [], 'signupForm' => []];
 
-    $valid_username=checkUsernameField($username); // true si username correct, false sinon
-    $valid_password=checkPasswordField($password); // true si password correct, false sinon
-    $valid_lastname=checkLastnameField($lastname); // true si lastname correct, false sinon
-    $valid_firstname=checkFirstnameField($firstname); // true si firstname correct, false sinon
-    $valid_birthdate=checkBirthdateField($birthdate); // true si birthdate correct, false sinon
-    $valid_sexe=checkSexeField($sexe); // true si sexe correct, false sinon
-    $valid_fields = $valid_username && $valid_password &&
-        $valid_lastname && $valid_firstname &&
-        $valid_birthdate && $valid_sexe; // true si tout est correct, false sinon
+    $validUsername=checkUsernameField($username); // true si username correct, false sinon
+    $validPassword=checkPasswordField($password); // true si password correct, false sinon
+    $validLastName=checkLastnameField($lastname); // true si lastname correct, false sinon
+    $validFirstName=checkFirstnameField($firstname); // true si firstname correct, false sinon
+    $validBirthdate=checkBirthdateField($birthdate); // true si birthdate correct, false sinon
+    $validGender=checkSexeField($gender); // true si sexe correct, false sinon
+    $validFields = $validUsername && $validPassword &&
+        $validLastName && $validFirstName &&
+        $validBirthdate && $validGender; // true si tout est correct, false sinon
 
-    if ($valid_fields) { // Si tout est correct
-        $valid_creation_account=!checkAccountAlreadyExists($username); // true si aucun compte n'existe pour ce username, false sinon
-        if ($valid_creation_account) { // Si aucun compte n'existe
+    if ($validFields) { // Si tout est correct
+        $validAccountCreation=!checkAccountAlreadyExists($username); // true si aucun compte n'existe pour ce username, false sinon
+        if ($validAccountCreation) { // Si aucun compte n'existe
             // Recuperer les favoris de session si existants
             $sessionFavorites = isset($_SESSION['favoriteRecipes']) ? $_SESSION['favoriteRecipes'] : array();
 
             // creation du fichier utilisateur
-            $new_user = [
+            $newUser = [
                 'username' => $username,
                 'password' => password_hash($password, PASSWORD_DEFAULT), // Hashage du mot de passe
                 'lastname' => $lastname,
                 'firstname' => $firstname,
                 'birthdate' => $birthdate,
-                'sexe' => $sexe,
+                'sexe' => $gender,
                 'favoriteRecipes' => $sessionFavorites, // Transfert des favoris de session
             ];
 
             // Ecriture via la fonction utilitaire
-            saveUserInfos($username, $new_user);
+            saveUserInfos($username, $newUser);
 
             // On verifie qu'on retrouve bien l'utilisateur
             $verify = checkConnection($username, $password);
@@ -65,75 +65,75 @@ function checkSignUp($username, $password, $lastname,
                 && isset($verify['username']) && isset($verify['password'])
                 && $verify['username'] && $verify['password']) {
 
-                $all_correct=true;
+                $allCorrect=true;
                 $page='accueil'; // apres une connexion valide, on redirige vers l'accueil
                 $messages[]="Compte cr&eacute;&eacute; avec succ&egrave;s.";
             } else {
-                $messages_errors[]=
+                $messagesErrors[]=
                     "Une erreur est survenue lors de la cr&eacute;ation du compte."
                     ."<br />Veuillez r&eacute;essayer s&apos;il-vous-pla&icirc;t.";
                 $page='signUp';
             }
 
         } else { // sinon (si il existe deja un compte pour ce pseudo)
-            $messages_errors[] = "Cet identifiant existe d&eacute;j&agrave;.";
-            $class_fields['signupForm']['username'] = 'error';
-            $value_fields['signupForm']['username'] = $username;
+            $messagesErrors[] = "Cet identifiant existe d&eacute;j&agrave;.";
+            $classFields['signupForm']['username'] = 'error';
+            $valueFields['signupForm']['username'] = $username;
             $page = 'signUp';
         }
     } else { // Sinon (si au moins 1 champ n'est pas correct)
-        $messages_errors[] = "Impossible de cr&eacute;er le compte&nbsp;!";
+        $messagesErrors[] = "Impossible de cr&eacute;er le compte&nbsp;!";
 
-        if (!$valid_username) {
-            $class_fields['signupForm']['username']="error";
-            $messages_errors[] = "L&apos;identifiant est invalide.";
+        if (!$validUsername) {
+            $classFields['signupForm']['username']="error";
+            $messagesErrors[] = "L&apos;identifiant est invalide.";
         }else{
-            $value_fields['signupForm']['username']=$username;
+            $valueFields['signupForm']['username']=$username;
         }
 
-        if (!$valid_password) {
-            $class_fields['signupForm']['password']="error";
-            $messages_errors[]="Le mot de passe est invalide.";
+        if (!$validPassword) {
+            $classFields['signupForm']['password']="error";
+            $messagesErrors[]="Le mot de passe est invalide.";
         }
 
-        if (!$valid_firstname) {
-            $class_fields['signupForm']['firstname']="error";
-            $messages_errors[]="Le pr&eacute;nom est invalide.";
+        if (!$validFirstName) {
+            $classFields['signupForm']['firstname']="error";
+            $messagesErrors[]="Le pr&eacute;nom est invalide.";
         } else {
-            $value_fields['signupForm']['firstname']=$firstname;
+            $valueFields['signupForm']['firstname']=$firstname;
         }
 
-        if (!$valid_lastname) {
-            $class_fields['signupForm']['lastname']="error";
-            $messages_errors[]="Le nom est invalide.";
+        if (!$validLastName) {
+            $classFields['signupForm']['lastname']="error";
+            $messagesErrors[]="Le nom est invalide.";
         } else {
-            $value_fields['signupForm']['lastname']=$lastname;
+            $valueFields['signupForm']['lastname']=$lastname;
         }
 
-        if (!$valid_birthdate) {
-            $class_fields['signupForm']['birthdate']="error";
-            $messages_errors[]="La date de naissance est invalide.";
+        if (!$validBirthdate) {
+            $classFields['signupForm']['birthdate']="error";
+            $messagesErrors[]="La date de naissance est invalide.";
         } else {
-            $value_fields['signupForm']['birthdate']=$birthdate;
+            $valueFields['signupForm']['birthdate']=$birthdate;
         }
 
-        if (!$valid_sexe) {
-            $class_fields['signupForm']['sexe']="error";
-            $messages_errors[]="Le sexe est invalide.";
+        if (!$validGender) {
+            $classFields['signupForm']['sexe']="error";
+            $messagesErrors[]="Le sexe est invalide.";
         } else {
-            $value_fields['signupForm']['sexe']=$sexe;
+            $valueFields['signupForm']['sexe']=$gender;
         }
 
-        $all_correct=false;
+        $allCorrect=false;
         $page='signUp';
     }
 
     return [
         'messages'=> $messages,
-        'messages_errors' => $messages_errors,
-        'correct_signup' => $all_correct,
-        'value_fields' => $value_fields,
-        'class_fields' => $class_fields,
+        'messages_errors' => $messagesErrors,
+        'correct_signup' => $allCorrect,
+        'value_fields' => $valueFields,
+        'class_fields' => $classFields,
         'page' => $page
     ];
 }

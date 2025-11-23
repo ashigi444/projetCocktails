@@ -16,15 +16,15 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                     <input type="text" name="new_username" id="new_username"
                            placeholder="Identifiant..."
                            value="<?php echo $infosUser['username']; ?>"
-                            <?php if (isset($class_fields['username'])) { ?>
-                                class="<?php echo $class_fields['username']; ?>"
+                            <?php if (isset($classFields['username'])) { ?>
+                                class="<?php echo $classFields['username']; ?>"
                             <?php } ?>
                             disabled="disabled"
                     />
                 </label>
                 <label for="statut">Statut de connexion&nbsp;:
                     <input type="color" id="statut" name="statut"
-                       <?php if(isset($statut_connexion)) { ?>
+                       <?php if(isset($connectionStatus)) { ?>
                            value="#00FF00"
                            disabled="disabled"
                        <?php } ?>
@@ -36,13 +36,13 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
         <fieldset>
             <legend>Informations Personnelles</legend>
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
-                <label for="new_lastname">Nom&nbsp;:
-                    <input type="text" name="new_lastname" id="new_lastname"
+                <label for="newLastname">Nom&nbsp;:
+                    <input type="text" name="newLastname" id="newLastname"
                             <?php if (isset($infosUser['lastname'])) { ?>
                                 placeholder="Nom..."
                                 value="<?php echo $infosUser['lastname']; ?>"
-                                <?php if (isset($class_fields['lastname'])) { ?>
-                                    class="<?php echo $class_fields['lastname']; ?>"
+                                <?php if (isset($classFields['lastname'])) { ?>
+                                    class="<?php echo $classFields['lastname']; ?>"
                                 <?php } ?>
                             <?php } ?>
                     />
@@ -53,13 +53,13 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
-                <label for="new_firstname">Pr&eacute;nom&nbsp;:
-                    <input type="text" name="new_firstname" id="new_firstname"
+                <label for="newFirstname">Pr&eacute;nom&nbsp;:
+                    <input type="text" name="newFirstname" id="newFirstname"
                             <?php if (isset($infosUser['firstname'])) { ?>
                                 placeholder="Pr&eacute;nom..."
                                 value="<?php echo $infosUser['firstname']; ?>"
-                                <?php if (isset($class_fields['firstname'])) { ?>
-                                    class="<?php echo $class_fields['firstname']; ?>"
+                                <?php if (isset($classFields['firstname'])) { ?>
+                                    class="<?php echo $classFields['firstname']; ?>"
                                 <?php } ?>
                             <?php } ?>
                     />
@@ -70,12 +70,12 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
-                <label for="new_birthdate">Date de naissance&nbsp;:
-                    <input type="date" name="new_birthdate" id="new_birthdate"
+                <label for="newBirthdate">Date de naissance&nbsp;:
+                    <input type="date" name="newBirthdate" id="newBirthdate"
                             <?php if (isset($infosUser['birthdate'])) { ?>
                                 value="<?php echo $infosUser['birthdate']; ?>"
-                                <?php if (isset($class_fields['birthdate'])) { ?>
-                                    class="<?php echo $class_fields['birthdate']; ?>"
+                                <?php if (isset($classFields['birthdate'])) { ?>
+                                    class="<?php echo $classFields['birthdate']; ?>"
                                 <?php } ?>
                             <?php } ?>
                     />
@@ -88,19 +88,19 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
                 <label>
                     Sexe&nbsp;:
-                    <input type="radio" name="new_sexe" value="female"
+                    <input type="radio" name="newSexe" value="female"
                             <?php if (isset($infosUser['sexe']) && $infosUser['sexe']=="female") { ?>
                                 checked="checked"
-                                <?php if (isset($class_fields['sexe'])) { ?>
-                                    class="<?php echo $class_fields['sexe']; ?>"
+                                <?php if (isset($classFields['sexe'])) { ?>
+                                    class="<?php echo $classFields['sexe']; ?>"
                                 <?php } ?>
                             <?php } ?>
                     />Femme
-                    <input type="radio" name="new_sexe" value="male"
+                    <input type="radio" name="newSexe" value="male"
                             <?php if (isset($infosUser['sexe']) && $infosUser['sexe']=="male") { ?>
                                 checked="checked"
-                                <?php if (isset($class_fields['sexe'])) { ?>
-                                    class="<?php echo $class_fields['sexe']; ?>"
+                                <?php if (isset($classFields['sexe'])) { ?>
+                                    class="<?php echo $classFields['sexe']; ?>"
                                 <?php } ?>
                             <?php } ?>
                     />Homme

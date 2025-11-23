@@ -3,99 +3,99 @@ require_once "utils/utils.php";
 
 function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
     $messages = [];
-    $messages_errors = [];
-    $class_fields = null;
-    $allows_update = true;
+    $messagesErrors = [];
+    $classFields = null;
+    $allowsUpdate = true;
 
     if (!isset($_SESSION['user']['username'])) {
-        $messages_errors[] = "Vous n'êtes pas connecté.";
-        $allows_update = false;
+        $messagesErrors[] = "Vous n'êtes pas connecté.";
+        $allowsUpdate = false;
     }
 
     $username = $_SESSION['user']['username'];
     $infosUser = loadUserInfos($username);
     if (!isset($infosUser) || !is_array($infosUser) || empty($infosUser)) {
-        $messages_errors[] = "Impossible de charger vos informations.";
-        $allows_update = false;
+        $messagesErrors[] = "Impossible de charger vos informations.";
+        $allowsUpdate = false;
     }
 
-    if($allows_update){ // Si jusqu'ici c'est correct, on teste la validite du champ
+    if($allowsUpdate){ // Si jusqu'ici c'est correct, on teste la validite du champ
         if($typeUpdate == "updateLastname"){
             if(!checkLastnameField($newValue) || checkLastnameFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
-                $allows_update = false;
+                $allowsUpdate = false;
             }
         }else if($typeUpdate == "updateFirstname"){
             if(!checkFirstnameField($newValue) || checkFirstnameFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
-                $allows_update = false;
+                $allowsUpdate = false;
             }
         }else if ($typeUpdate == "updateBirthdate"){
             if(!checkBirthdateField($newValue) || checkBirthdateFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
-                $allows_update = false;
+                $allowsUpdate = false;
             }
         }else if($typeUpdate == "updateSexe"){
             if(!checkSexeField($newValue) || checkSexeFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
-                $allows_update = false;
+                $allowsUpdate = false;
             }
         }else{
-            $allows_update = false;
+            $allowsUpdate = false;
         }
     }
 
-    if(!$allows_update){ // Si la modification n'est pas autorisee
-        $messages_errors[] = $errorMsg;
-        $class_fields="error";
+    if(!$allowsUpdate){ // Si la modification n'est pas autorisee
+        $messagesErrors[] = $errorMsg;
+        $classFields="error";
         return [
             'messages' => $messages,
-            'messages_errors' => $messages_errors,
-            'class_fields' => $class_fields,
-            'allows_update' => $allows_update
+            'messages_errors' => $messagesErrors,
+            'class_fields' => $classFields,
+            'allowsUpdate' => $allowsUpdate
         ];
     }
 
     $messages[] = $successMsg;
     return [
         'messages' => $messages,
-        'messages_errors' => $messages_errors,
-        'class_fields' => $class_fields,
-        'allows_update' => $allows_update
+        'messages_errors' => $messagesErrors,
+        'class_fields' => $classFields,
+        'allowsUpdate' => $allowsUpdate
     ];
 }
 
-function checkUpdateLastname($new_lastname){
+function checkUpdateLastname($newLastName){
     return updateField(
         "updateLastname",
-        $new_lastname,
+        $newLastName,
         "Nom modifi&eacute;.",
         "Impossible de modifier le nom."
     );
 }
 
-function checkUpdateFirstname($new_firstname){
+function checkUpdateFirstname($newFirstName){
     return updateField(
         "updateFirstname",
-        $new_firstname,
+        $newFirstName,
         "Pr&eacute;nom modifi&eacute;.",
         "Impossible de modifier le pr&eacute;nom."
     );
 }
 
-function checkUpdateBirthdate($new_birthdate){
+function checkUpdateBirthdate($newBirthdate){
     return updateField(
         "updateBirthdate",
-        $new_birthdate,
+        $newBirthdate,
         "Date de naissance modifi&eacute;e.",
         "Impossible de modifier la date de naissance."
     );
 }
 
-function checkUpdateSexe($new_sexe){
+function checkUpdateSexe($newGender){
     return updateField(
         "updateSexe",
-        $new_sexe,
+        $newGender,
         "Sexe modifi&eacute;.",
         "Impossible de modifier le sexe."
     );

@@ -2,9 +2,9 @@
 <main>
     <?php
     // Affichage des messages d'erreurs si il y en a
-    if (!empty($messages_errors)) { ?>
+    if (!empty($messagesErrors)) { ?>
     <div class="message message-errors">
-        <?php foreach ($messages_errors as $mess) { ?>
+        <?php foreach ($messagesErrors as $mess) { ?>
             <p><?php echo $mess; ?></p>
         <?php }?>
     </div>

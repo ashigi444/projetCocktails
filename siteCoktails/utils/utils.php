@@ -47,7 +47,7 @@ function makeFilenameImage($imageName) {
     return $imageName.'.jpg'; // return le nom de l'image suivi de .jpg
 }
 
-function make_filename_user($username){
+function makeFilenameUser($username){
     return "dataUsers/user".makeFilenameCorrected($username).".php";
 }
 
@@ -58,7 +58,7 @@ function make_filename_user($username){
  * @return array|null
  */
 function loadUserInfos($username){
-    $filename=make_filename_user($username);
+    $filename=makeFilenameUser($username);
     if (!file_exists($filename)) {
         return null;
     }
@@ -78,7 +78,7 @@ function loadUserInfos($username){
  * @return void
  */
 function saveUserInfos($username, $infosUser) {
-    $filename = make_filename_user($username);
+    $filename = makeFilenameUser($username);
     if (!is_dir('dataUsers')) {
         mkdir('dataUsers', 0755, true);
     }
@@ -96,7 +96,7 @@ function saveUserInfos($username, $infosUser) {
 function checkAccountAlreadyExists($username){
     if(!isset($username) || empty(trim($username)))
         return false;
-    return file_exists(make_filename_user($username));
+    return file_exists(makeFilenameUser($username));
 }
 
 /**
@@ -170,9 +170,9 @@ function checkBirthdateFile($birthdate, $infosUser){
         $birthdate == $infosUser['birthdate'];
 }
 
-function checkSexeFile($sexe, $infosUser){
+function checkSexeFile($gender, $infosUser){
     return isset($infosUser['sexe']) &&
-        $sexe == $infosUser['sexe'];
+        $gender == $infosUser['sexe'];
 }
 
 // Toutes les fonctions de verification de champ, a modifier avec des regex plus strictes
@@ -218,14 +218,14 @@ function checkLastnameField($lastname){
 }
 
 /**
- * Verifie si le prenom est correct par rapport la même regex que sur le lastname
+ * Verifie si le prenom est correct par rapport la meme regex que sur le lastname
  * le prenom provient normalement d'un champ rempli par l'utilisateur
  *
  * @param string $firstname le prenom a verifier
  * @return bool true si le prenom existe, n'est pas vide et passe la regex, false sinon
  */
 function checkFirstnameField($firstname){
-    return checkLastnameField($firstname); // la même regex et les memes contraintes...
+    return checkLastnameField($firstname); // la meme regex et les memes contraintes...
 }
 
 /**
@@ -244,11 +244,11 @@ function checkBirthdateField($birthdate){
     $today=date("Y-m-d");
     list($year,$month,$day)=explode('-',$birthdate);
 
-    $date_of_18_years=($year+18)."-".$month."-".$day; // On a 18ans lorsque la date est
+    $dateOf18Years=($year+18)."-".$month."-".$day; // On a 18ans lorsque la date est
                                                       // meme jour, meme mois, annee de naissance+18
     return (
         checkdate($month,$day,$year) &&
-        $date_of_18_years<=$today // Si la date des 18ans est inferieure ou egale a celle du jour
+        $dateOf18Years<=$today // Si la date des 18ans est inferieure ou egale a celle du jour
                                   // c'est que l'utilisateur a plus que 18ans
     );
 }
@@ -257,24 +257,24 @@ function checkBirthdateField($birthdate){
  * Verifie si le sexe est correct par rapport a une regex qui match sur 'male' ou 'female'
  * le sexe provient normalement d'un champ rempli par l'utilisateur
  *
- * @param string $sexe le sexe a verifier
+ * @param string $gender le sexe a verifier
  * @return bool true si le sexe existe, n'est pas vide et passe la regex, false sinon
  */
-function checkSexeField($sexe){
+function checkSexeField($gender){
     // Vide autorise car champ optionnel
-    return !isset($sexe) || empty(trim($sexe)) || preg_match("/^(male|female)$/", $sexe);
+    return !isset($gender) || empty(trim($gender)) || preg_match("/^(male|female)$/", $gender);
 }
 
 
 // Fonction pour obtenir tous les aliments de la hierarchie (y compris sous-categories)
-function getAlimentsHierarchie($nomAliment, $hierarchie)
+function getIngredientsHierarchy($ingredientName, $hierarchie)
 {
     $liste = array();
-    $liste[] = $nomAliment;
+    $liste[] = $ingredientName;
 
-    if (isset($hierarchie[$nomAliment]['sous-categorie'])) {
-        foreach ($hierarchie[$nomAliment]['sous-categorie'] as $sousCat) {
-            $sousListe = getAlimentsHierarchie($sousCat, $hierarchie);
+    if (isset($hierarchie[$ingredientName]['sous-categorie'])) {
+        foreach ($hierarchie[$ingredientName]['sous-categorie'] as $sousCat) {
+            $sousListe = getIngredientsHierarchy($sousCat, $hierarchie);
             foreach ($sousListe as $element) {
                 $liste[] = $element;
             }
