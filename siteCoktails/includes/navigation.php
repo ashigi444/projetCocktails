@@ -45,23 +45,29 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
         <div class="breadcrumb-path">
             <?php
             $pathSoFar = array();
+
             foreach ($breadcrumbPath as $index => $aliment) {
-                if ($index > 0) {
-                    echo ' / '; // A retirer et reflechir comment faire autrement
-                }
                 $pathSoFar[] = $aliment;
                 $pathParam = implode('>', array_slice($pathSoFar, 0, -1));
-                if ($aliment === $currentIngredient) { ?>
-                    <p class="p-breadcrumb-path"><strong><?php echo $aliment; ?></strong></p>
-                <?php } else {
-                    $linkUrl = 'index.php?page=navigation&aliment=' . urlencode($aliment);
-                    if (!empty($pathParam)) {
-                        $linkUrl .= '&path=' . urlencode($pathParam);
-                    } ?>
-                    <a class="a-breadcrumb-path" href="<?php echo $linkUrl; ?>"> <?php echo $aliment; ?></a>
-                <?php }
-            }
-            ?>
+
+                $isCurrent=($aliment == $currentIngredient);
+
+                // URL pour les éléments non courants
+                $linkUrl='index.php?page=navigation&aliment=' . urlencode($aliment);
+                if(!empty($pathParam)){
+                    $linkUrl.='&path='.urlencode($pathParam);
+                }
+                ?>
+                <?php if($index>0){ ?>
+                    <span class="separator">/</span>
+                <?php } ?>
+
+                <?php if ($isCurrent) { ?>
+                    <span class="p-breadcrumb-path"><strong><?php echo $aliment; ?></strong></span>
+                <?php }else{ ?>
+                    <a class="a-breadcrumb-path" href="<?php echo $linkUrl; ?>"><?php echo $aliment; ?></a>
+                <?php } ?>
+            <?php } ?>
         </div>
 
         <?php
@@ -70,13 +76,13 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
             <h4>Sous-cat&eacute;gories&nbsp;:</h4>
             <ul class="subcategory">
                 <?php
-                foreach ($subcategories as $subcat) {
-                    $linkUrl = 'index.php?page=navigation&aliment=' . urlencode($subcat) . '&path=' . urlencode($currentPath);
+                foreach($subcategories as $subcat){
+                    $linkUrl='index.php?page=navigation&aliment=' . urlencode($subcat) . '&path=' . urlencode($currentPath);
                     ?>
                     <li><a href="<?php echo $linkUrl; ?>"><?php echo $subcat; ?></a></li>
                 <?php } ?>
             </ul>
-        <?php } else { ?>
+        <?php }else{ ?>
             <p class="no-subcategory">Pas de sous-cat&eacute;gorie.</p>
         <?php } ?>
     </div>
