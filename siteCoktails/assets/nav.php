@@ -1,3 +1,4 @@
+<?php ?>
 <nav>
     <!-- boutons de navigation entre pages -->
     <ul> <?php
@@ -47,9 +48,9 @@
     <!-- zone de connexion ou profil-->
     <div>
         <?php if ((!isset($user) || empty($user)) // Si aucun utilisateur n'existe
-                && (!isset($_GET['page']) || $_GET['page']!='signUp')) // Et que si il y a une page elle est différente de cette d'inscription
+                && (!isset($_GET['page']) || $_GET['page']!='signUp')) // Et que si il y a une page elle est differente de cette d'inscription
         { ?>
-            <a class="buttonSignUp" href="index.php?page=signUp">S&apos;inscrire</a>
+            <a class="button-signup" href="index.php?page=signUp">S&apos;inscrire</a>
         <?php } ?>
 
         <?php if (isset($user) && !empty($user)) { ?>
@@ -67,7 +68,7 @@
                     <input
                         id="signin_username" type="text" name="username" placeholder="Identifiant" required="required"
                         <?php
-                        // Si le username existe déjà et qu'il est valide, on le réecrit
+                        // Si le username existe deja et qu'il est valide, on le reecrit
                         if(isset($value_fields['signinForm']['username'])){ ?>
                             value="<?php echo $value_fields['signinForm']['username']; ?>"
                         <?php }
@@ -85,7 +86,7 @@
                     <?php } ?>
                     />
                 </label>
-                <button class="buttonSub" type="submit" name="action" value="signin">Connexion</button>
+                <button class="button-sub" type="submit" name="action" value="signin">Connexion</button>
             <?php } ?>
         </form>
     </div>

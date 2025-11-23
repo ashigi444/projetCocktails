@@ -13,30 +13,30 @@ function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
     }
 
     $username = $_SESSION['user']['username'];
-    $infos_user = loadUserInfos($username);
-    if (!isset($infos_user) || !is_array($infos_user) || empty($infos_user)) {
+    $infosUser = loadUserInfos($username);
+    if (!isset($infosUser) || !is_array($infosUser) || empty($infosUser)) {
         $messages_errors[] = "Impossible de charger vos informations.";
         $allows_update = false;
     }
 
     if($allows_update){ // Si jusqu'ici c'est correct, on teste la validite du champ
         if($typeUpdate == "updateLastname"){
-            if(!checkLastnameField($newValue) || checkLastnameFile($newValue, $infos_user)){
+            if(!checkLastnameField($newValue) || checkLastnameFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allows_update = false;
             }
         }else if($typeUpdate == "updateFirstname"){
-            if(!checkFirstnameField($newValue) || checkFirstnameFile($newValue, $infos_user)){
+            if(!checkFirstnameField($newValue) || checkFirstnameFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allows_update = false;
             }
         }else if ($typeUpdate == "updateBirthdate"){
-            if(!checkBirthdateField($newValue) || checkBirthdateFile($newValue, $infos_user)){
+            if(!checkBirthdateField($newValue) || checkBirthdateFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allows_update = false;
             }
         }else if($typeUpdate == "updateSexe"){
-            if(!checkSexeField($newValue) || checkSexeFile($newValue, $infos_user)){
+            if(!checkSexeField($newValue) || checkSexeFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allows_update = false;
             }
@@ -107,17 +107,19 @@ function applyUpdateFile($fieldKey, $newValue){
     }
 
     $username = $_SESSION['user']['username'];
-    $infos_user = loadUserInfos($username);
-    if (!isset($infos_user) || !is_array($infos_user) || empty($infos_user)) {
+    $infosUser = loadUserInfos($username);
+    if (!isset($infosUser) || !is_array($infosUser) || empty($infosUser)) {
         return;
     }
 
     if ($fieldKey === 'password') {
-        $infos_user['password'] = password_hash($newValue, PASSWORD_DEFAULT);
+        $infosUser['password'] = password_hash($newValue, PASSWORD_DEFAULT);
     } else {
-        $infos_user[$fieldKey] = $newValue;
+        $infosUser[$fieldKey] = $newValue;
     }
 
     // On ne touche pas au reste
-    saveUserInfos($username, $infos_user);
+    saveUserInfos($username, $infosUser);
 }
+
+?>

@@ -1,3 +1,4 @@
+<?php ?>
 <footer>
 <?php
 $annee = date('Y');

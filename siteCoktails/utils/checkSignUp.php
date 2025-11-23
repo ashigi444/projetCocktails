@@ -15,10 +15,10 @@ require_once "utils/utils.php";
  * @param string $birthdate la date d'anniversaire saisit par l'utilisateur
  * @param string $sexe le sexe coche par l'utilisateur
  * @return array le tableau qui contient tout les resultats,
- *      -> le booleen qui indique la validite de la creation du compte,
- *      -> les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
- *      -> les classes de style et preremplissage de champs en cas d'echec de la creation du compte,
- *      -> etc...
+ *       -  le booleen qui indique la validite de la creation du compte,
+ *       -  les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
+ *       -  les classes de style et preremplissage de champs en cas d'echec de la creation du compte,
+ *       -  etc...
  */
 function checkSignUp($username, $password, $lastname,
                      $firstname, $birthdate, $sexe){

@@ -12,10 +12,10 @@ require_once "utils/utils.php";
  * @param string $username l'identifiant saisit par l'utilisateur pour se connecter
  * @param string $password le mot de passe saisit par l'utilisateur pour se connecter
  * @return array le tableau qui contient tout les resultats,
- *       -> le booleen qui indique la validite de la connexion,
- *       -> les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
- *       -> les classes de style et preremplissage de champs en cas d'echec de la connexion,
- *       -> etc...
+ *        -  le booleen qui indique la validite de la connexion,
+ *        -  les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
+ *        -  les classes de style et preremplissage de champs en cas d'echec de la connexion,
+ *        -  etc...
  */
 function checkSignIn($username, $password)
 {
@@ -35,7 +35,7 @@ function checkSignIn($username, $password)
         if (!is_array($valid_connection)) {
             // Redirecting to inscription form...
             $value_fields['signupForm']['username'] = $username;
-            // $password_form_signup=$validity['field']['password'] ? $password : null; // A voir si on autorise la recopie du mot de passe dans les champs
+            // $password_form_signup=$validity['field']['password'] ? $password  null // A voir si on autorise la recopie du mot de passe dans les champs
             $page = "signUp";
             if ($valid_connection == 'undefined_file') { // If the account file doesn't exists
                 $messages_errors[] = "
@@ -87,7 +87,7 @@ function checkSignIn($username, $password)
             $class_fields['signinForm']['password'] = "error";
             $messages_errors[] = "Mot de passe invalide.";
             $all_correct = false;
-            if ($valid_username)// Recupération du username pour le champ du formulaire
+            if ($valid_username)// Recuperation du username pour le champ du formulaire
                 $value_fields['signinForm']['username'] = $username;
         }
     }

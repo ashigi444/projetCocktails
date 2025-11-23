@@ -1,3 +1,5 @@
+<?php
+?>
 <h2>Recettes pr&eacute;f&eacute;r&eacute;es</h2>
 
 <?php

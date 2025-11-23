@@ -1,3 +1,4 @@
+<?php ?>
 <main>
     <?php
     // Affichage des messages d'erreurs si il y en a

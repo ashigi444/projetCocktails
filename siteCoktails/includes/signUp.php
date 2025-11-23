@@ -1,3 +1,5 @@
+<?php
+?>
 <h2>Inscription</h2>
 <p>Les champs marqu&eacute;s par une ast&eacute;risque&nbsp;(*) sont obligatoires.</p>
 <fieldset>
@@ -77,7 +79,7 @@
             />
         </label>
 
-        <button class="buttonSub" type="submit" name="action" value="signup">
+        <button class="button-sub" type="submit" name="action" value="signup">
             Inscription
         </button>
     </form>

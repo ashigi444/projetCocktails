@@ -27,9 +27,11 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
         // Redirection pour eviter la resoumission
         $redirectPage = isset($_GET['page']) ? $_GET['page'] : 'navigation';
 
-    }else if($action == "logout" && $statut_connexion){ // Si c'est une deconnexion, on deconnecte
-        unset($_SESSION['user']);
-        $messages[] = "Vous&nbsp;&ecirc;tes d&eacute;connect&eacute;.";
+    }else if($action == "logout"){ // Si c'est une deconnexion, on deconnecte
+        if($statut_connexion) {
+            unset($_SESSION['user']);
+            $messages[] = "Vous&nbsp;&ecirc;tes d&eacute;connect&eacute;.";
+        }
 
     }else if(strstr($action, "update") && $statut_connexion){ // Si c'est une mise a jour du profil,
         require "utils/checkUpdate.php";
@@ -87,58 +89,60 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
             $messages_errors[] = "Une erreur est survenue.";
         }
 
-    }else if(($action == "signup" || $action == "signin") && !$statut_connexion){ // Si c'est une connexion ou inscription
-        // On recupere les variables necessaires au traitement
-        $username = isset($_POST['username']) ? trim($_POST['username']) : '';
-        $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-        $lastname = isset($_POST['lastname']) ? trim($_POST['lastname']) : '';
-        $firstname = isset($_POST['firstname']) ? trim($_POST['firstname']) : '';
-        $birthdate = isset($_POST['birthdate']) ? trim($_POST['birthdate']) : '';
-        $sexe = isset($_POST['sexe']) ? trim($_POST['sexe']) : '';
+    }else if($action == "signup" || $action == "signin"){ // Si c'est une connexion ou inscription
+        if(!$statut_connexion) {
+            // On recupere les variables necessaires au traitement
+            $username = isset($_POST['username']) ? trim($_POST['username']) : '';
+            $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+            $lastname = isset($_POST['lastname']) ? trim($_POST['lastname']) : '';
+            $firstname = isset($_POST['firstname']) ? trim($_POST['firstname']) : '';
+            $birthdate = isset($_POST['birthdate']) ? trim($_POST['birthdate']) : '';
+            $sexe = isset($_POST['sexe']) ? trim($_POST['sexe']) : '';
 
-        // Et on creer celle qui permettront de validier ou non l'action,
-        //       et de reafficher les champs necessaires en cas d'erreur
-        $all_correct = true;
-        $value_fields = ['signinForm' => [], 'signupForm' => []];
-        $class_fields = ['signinForm' => [], 'signupForm' => []];
+            // Et on creer celle qui permettront de validier ou non l'action,
+            //       et de reafficher les champs necessaires en cas d'erreur
+            $all_correct = true;
+            $value_fields = ['signinForm' => [], 'signupForm' => []];
+            $class_fields = ['signinForm' => [], 'signupForm' => []];
 
-        if($action == "signup"){ // Si l'action est une inscription, on traite avec la fonction dediee
-            require "utils/checkSignUp.php";
-            $resultat = checkSignUp($username, $password, $lastname, $firstname, $birthdate, $sexe);
+            if ($action == "signup") { // Si l'action est une inscription, on traite avec la fonction dediee
+                require "utils/checkSignUp.php";
+                $resultat = checkSignUp($username, $password, $lastname, $firstname, $birthdate, $sexe);
 
-            // Puis on recupere les resultats
-            $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
-            $messages_errors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
-            $all_correct = isset($resultat['correct_signup']) ? $resultat['correct_signup'] : false;
-            $value_fields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
-            $class_fields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
-            $page = isset($resultat['page']) ? $resultat['page'] : $page;
+                // Puis on recupere les resultats
+                $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
+                $messages_errors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
+                $all_correct = isset($resultat['correct_signup']) ? $resultat['correct_signup'] : false;
+                $value_fields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
+                $class_fields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
+                $page = isset($resultat['page']) ? $resultat['page'] : $page;
 
-        }else{ // Si l'action est une connexion, on traite avec la fonction dediee
-            require "utils/checkSignIn.php";
-            $resultat = checkSignIn($username, $password);
+            } else { // Si l'action est une connexion, on traite avec la fonction dediee
+                require "utils/checkSignIn.php";
+                $resultat = checkSignIn($username, $password);
 
-            // Puis on recupere les resultats
-            $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
-            $messages_errors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
-            $all_correct = isset($resultat['correct_connection']) ? $resultat['correct_connection'] : false;
-            $value_fields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
-            $class_fields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
-            $page = isset($resultat['page']) ? $resultat['page'] : $page;
-        }
+                // Puis on recupere les resultats
+                $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
+                $messages_errors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
+                $all_correct = isset($resultat['correct_connection']) ? $resultat['correct_connection'] : false;
+                $value_fields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
+                $class_fields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
+                $page = isset($resultat['page']) ? $resultat['page'] : $page;
+            }
 
-        // Validation de la connexion (commune à signup + signin)
-        if (isset($all_correct) && $all_correct) { // Si tout est correct, alors on creer la session
-            session_regenerate_id(true);
-            // recupere toutes les infos de session utilisateur
-            $_SESSION['user']['username'] = !empty($username) ? $username : null;
-            $_SESSION['user']['lastname'] = !empty($lastname) ? $lastname : null;
-            $_SESSION['user']['firstname'] = !empty($firstname) ? $firstname : null;
-            $_SESSION['user']['birthdate'] = !empty($birthdate) ? $birthdate : null;
-            $_SESSION['user']['sexe'] = !empty($sexe) ? $sexe : null;
-            loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
-            $_COOKIE['user'] = $_SESSION['user']; // recopie les infos de session dans le cookie
-            $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
+            // Validation de la connexion (commune a signup + signin)
+            if (isset($all_correct) && $all_correct) { // Si tout est correct, alors on creer la session
+                session_regenerate_id(true);
+                // recupere toutes les infos de session utilisateur
+                $_SESSION['user']['username'] = !empty($username) ? $username : null;
+                $_SESSION['user']['lastname'] = !empty($lastname) ? $lastname : null;
+                $_SESSION['user']['firstname'] = !empty($firstname) ? $firstname : null;
+                $_SESSION['user']['birthdate'] = !empty($birthdate) ? $birthdate : null;
+                $_SESSION['user']['sexe'] = !empty($sexe) ? $sexe : null;
+                loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
+                $_COOKIE['user'] = $_SESSION['user']; // recopie les infos de session dans le cookie
+                $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
+            }
         }
     }else{ // Sinon (au cas ou l'action n'a pas ete trouvee)
         $messages_errors[] = "Une erreur est survenue. Cette action est impossible actuellement...";
@@ -146,11 +150,11 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
     }
 }
 
-// selection d'utilisateur si connecté
+// selection d'utilisateur si connecte
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
-// suppression des messages d'erreurs avec redirection vers l'accueil si l'utilisateur vient de créer son compte.
-// -> permet d'éviter une erreur ainsi qu'une redirection sur le formulaire d'inscription si actualisation de la page après création du compte...
+// suppression des messages d'erreurs avec redirection vers l'accueil si l'utilisateur vient de creer son compte.
+//  -> permet d'eviter une erreur ainsi qu'une redirection sur le formulaire d'inscription si actualisation de la page apres creation du compte...
 if(isset($user)){
     if(($page=="signUp" || (isset($action) && $action=="signup"))) {
         $messages_errors = []; // Reset le tableau des erreurs

@@ -24,14 +24,14 @@ function safeInputSearch($searchValue){
 function makeFilenameCorrected($filenameOriginal) {
     $filename = trim($filenameOriginal);
     // Remplace tout chaque lettre accentuee par la meme lettre sans accent
-    /*$filename = preg_replace('/[àÀâÂæÆáÁäÄãÃåÅāĀ]/', 'a',$filename);
-    $filename = preg_replace('/[éÉèÈêÊëËęĘėĖēĒ]/', 'e',$filename);
-    $filename = preg_replace('/[ÿŸ]/', 'y',$filename);
-    $filename = preg_replace('/[ûÛùÙüÜúÚūŪ]/', 'u',$filename);
-    $filename = preg_replace('/[îÎïÏìÌíÍįĮīĪ]/', 'i',$filename);
-    $filename = preg_replace('/[ôÔœŒöÖòÒóÓõÕōŌ]/', 'o',$filename);
-    $filename = preg_replace('/[çÇćĆčČ]/', 'c',$filename);
-    $filename = preg_replace('/[ñÑńŃ]/', 'n',$filename);*/
+    /*$filename = preg_replace('/[aAaAæÆaAaAaAaAaAeEeEeEeEeEeEeEyYuUuUuUuUuUiIiIiIiIiIiIoOœŒoOoOoOoOoOcCcCcCnNnN]+(([-']|( )*)[a-zA-ZaAaAæÆaAaAaAaAaAeEeEeEeEeEeEeEyYuUuUuUuUuUiIiIiIiIiIiIoOœŒoOoOoOoOoOcCcCcCnNnN]+)*)+$/', 'a',$filename)
+    $filename = preg_replace('/[eEeEeEeEeEeEeE]/', 'e',$filename)
+    $filename = preg_replace('/[yY]/', 'y',$filename)
+    $filename = preg_replace('/[uUuUuUuUuU]/', 'u',$filename)
+    $filename = preg_replace('/[iIiIiIiIiIiI]/', 'i',$filename)
+    $filename = preg_replace('/[oOœŒoOoOoOoOoO]/', 'o',$filename)
+    $filename = preg_replace('/[cCcCcC]/', 'c',$filename)
+    $filename = preg_replace('/[nNnN]/', 'n',$filename)*/
     $filename = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $filename);
     $filename = preg_replace('/ /', '_',$filename);
     $filename = preg_replace('/[^a-zA-Z0-9_]/', '',$filename);
@@ -62,12 +62,12 @@ function loadUserInfos($username){
     if (!file_exists($filename)) {
         return null;
     }
-    $infos_user = null;
+    $infosUser = null;
     require $filename;
-    if (!isset($infos_user) || !is_array($infos_user) || empty($infos_user)) {
+    if (!isset($infosUser) || !is_array($infosUser) || empty($infosUser)) {
         return null;
     }
-    return $infos_user;
+    return $infosUser;
 }
 
 /**
@@ -83,7 +83,7 @@ function saveUserInfos($username, $infosUser) {
         mkdir('dataUsers', 0755, true);
     }
     $users_print = var_export($infosUser, true);
-    $users_put = "<?php\n\$infos_user = " . $users_print . ";\n?>";
+    $users_put = "<?php\n\$infosUser = " . $users_print . ";\n?>";
     file_put_contents($filename, $users_put);
 }
 
@@ -112,11 +112,11 @@ function checkConnection($username, $password) {
     if(!isset($username) || empty(trim($username)) || !isset($password) || empty($password))
         return "undefined_infos";
 
-    $infos_user=loadUserInfos($username);
-    if (isset($infos_user) && is_array($infos_user) && !empty($infos_user)) {
+    $infosUser=loadUserInfos($username);
+    if (isset($infosUser) && is_array($infosUser) && !empty($infosUser)) {
         return [
-            'username' => checkUsernameFile($username, $infos_user),
-            'password' => checkPasswordFile($password, $infos_user)
+            'username' => checkUsernameFile($username, $infosUser),
+            'password' => checkPasswordFile($password, $infosUser)
         ];
     }else{
         if(checkAccountAlreadyExists($username)){
@@ -129,21 +129,21 @@ function checkConnection($username, $password) {
 
 /**
  * Verifie si le nom d'utilisateur est correct dans le tableau d'informations sur l'utilisateur
- * qui, generalement à l'appel de la fonction, vient du fichier d'utilisateur
+ * qui, generalement a l'appel de la fonction, vient du fichier d'utilisateur
  *
  * @param string $username le nom d'utilisateur a verifier
  * @param array $infosUser le tableau d'informations sur l'utilisateur
  * @return bool true si le nom d'utilisateur correspond dans le tableau, false sinon
  */
 function checkUsernameFile($username, $infosUser){
-    // On verifie quand même si login existe dans le tableau
+    // On verifie quand meme si login existe dans le tableau
     return isset($infosUser['username']) &&
         $infosUser['username'] == $username;
 }
 
 /**
  * Verifie si le mot de passe est correct dans le tableau d'informations sur l'utilisateur
- * qui, generalement à l'appel de la fonction, vient du fichier d'utilisateur
+ * qui, generalement a l'appel de la fonction, vient du fichier d'utilisateur
  *
  * @param string $password le mot de passe a verifier
  * @param array $infosUser le tableau d'informations sur l'utilisateur
@@ -175,10 +175,10 @@ function checkSexeFile($sexe, $infosUser){
         $sexe == $infosUser['sexe'];
 }
 
-// Toutes les fonctions de vérification de champ, à modifier avec des regex plus strictes
+// Toutes les fonctions de verification de champ, a modifier avec des regex plus strictes
 /**
- * Verifie si le nom d'utilisateur est correct par rapport à une regex
- * le nom d'utilisateur provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si le nom d'utilisateur est correct par rapport a une regex
+ * le nom d'utilisateur provient normalement d'un champ rempli par l'utilisateur
  * On n'accepte pas le nom d'utilisateur vide
  *
  * @param string $username le nom d'utilisateur a verifier
@@ -189,8 +189,8 @@ function checkUsernameField($username) {
 }
 
 /**
- * Verifie si le mot de passe est correct par rapport à une regex
- * le mot de passe provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si le mot de passe est correct par rapport a une regex
+ * le mot de passe provient normalement d'un champ rempli par l'utilisateur
  * On n'autorise pas le mot de passe vide.
  *
  * @param string $password le mot de passe a verifier
@@ -201,8 +201,13 @@ function checkPasswordField($password) {
 }
 
 /**
- * Verifie si le nom est correct par rapport à une regex
- * le nom provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si le nom est correct par rapport a une regex qui accepte
+ * les noms (et prenom) qui sont composes de lettres minuscules et/ou de lettres MAJUSCULES,
+ * les caracteres "-", " " et "'".
+ * Les lettres peuvent etre accentuees.
+ * Tirets et apostrophes sont forcements encadres par deux lettres,
+ * Par contre plusieurs espaces sont possibles entre deux parties de prenom/nom.
+ * Le nom provient normalement d'un champ rempli par l'utilisateur
  *
  * @param string $lastname le nom a verifier
  * @return bool true si le nom existe, n'est pas vide et passe la regex, false sinon
@@ -213,26 +218,26 @@ function checkLastnameField($lastname){
 }
 
 /**
- * Verifie si le prenom est correct par rapport à une regex
- * le prenom provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si le prenom est correct par rapport la même regex que sur le lastname
+ * le prenom provient normalement d'un champ rempli par l'utilisateur
  *
  * @param string $firstname le prenom a verifier
  * @return bool true si le prenom existe, n'est pas vide et passe la regex, false sinon
  */
 function checkFirstnameField($firstname){
-    return !isset($firstname) || empty(trim($firstname)) || preg_match(
-            "/^([a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+(([-']|( )*)[a-zA-ZàÀâÂæÆáÁäÄãÃåÅāĀéÉèÈêÊëËęĘėĖēĒÿŸûÛùÙüÜúÚūŪîÎïÏìÌíÍįĮīĪôÔœŒöÖòÒóÓõÕōŌçÇćĆčČñÑńŃ]+)*)+$/", $firstname);
+    return checkLastnameField($firstname); // la même regex et les memes contraintes...
 }
 
 /**
- * Verifie si la date de naissance est correct par rapport à une regex
- * la date de naissance provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si la date de naissance est correct,
+ * on verifie si la date de naissance est valide et si aujourd'hui est au moins 18ans apres la naissance
+ * la date de naissance provient normalement d'un champ rempli par l'utilisateur
  *
  * @param string $birthdate la date de naissance a verifier
  * @return bool true si la date de naissance existe, n'est pas vide et passe la regex, false sinon
  */
 function checkBirthdateField($birthdate){
-    // Vide autorisé car champ optionnel
+    // Vide autorise car champ optionnel
     if(!isset($birthdate) || empty(trim($birthdate)))
         return true;
 
@@ -249,14 +254,14 @@ function checkBirthdateField($birthdate){
 }
 
 /**
- * Verifie si le sexe est correct par rapport à une regex
- * le sexe provient generalement d'un champ rempli par l'utilisateur
+ * Verifie si le sexe est correct par rapport a une regex qui match sur 'male' ou 'female'
+ * le sexe provient normalement d'un champ rempli par l'utilisateur
  *
  * @param string $sexe le sexe a verifier
  * @return bool true si le sexe existe, n'est pas vide et passe la regex, false sinon
  */
 function checkSexeField($sexe){
-    // Vide autorisé car champ optionnel
+    // Vide autorise car champ optionnel
     return !isset($sexe) || empty(trim($sexe)) || preg_match("/^(male|female)$/", $sexe);
 }
 

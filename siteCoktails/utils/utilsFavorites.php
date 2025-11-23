@@ -118,21 +118,21 @@ function saveFavoritesToFile($favorites, $username) {
     // Charger les donnees existantes avec file_get_contents pour eviter le cache
     $content = file_get_contents($filename);
 
-    // Extraire $infos_user du fichier
+    // Extraire $infosUser du fichier
     $tempFile = tempnam(sys_get_temp_dir(), 'user_');
     file_put_contents($tempFile, $content);
     include $tempFile;
     unlink($tempFile);
 
-    if (!isset($infos_user)) {
+    if (!isset($infosUser)) {
         return false;
     }
 
     // Mettre a jour les favoris
-    $infos_user['favoriteRecipes'] = $favorites;
+    $infosUser['favoriteRecipes'] = $favorites;
 
     // Sauvegarder le fichier
-    $newContent = "<?php\n\$infos_user = " . var_export($infos_user, true) . ";\n?>";
+    $newContent = "<?php\n\$infosUser = " . var_export($infosUser, true) . ";\n?>";
     return file_put_contents($filename, $newContent) !== false;
 }
 
@@ -149,16 +149,16 @@ function loadFavoritesFromFile($username) {
         // Charger avec file_get_contents pour eviter le cache
         $content = file_get_contents($filename);
 
-        // Extraire $infos_user du fichier
+        // Extraire $infosUser du fichier
         $tempFile = tempnam(sys_get_temp_dir(), 'user_');
         file_put_contents($tempFile, $content);
         include $tempFile;
         unlink($tempFile);
 
-        if (isset($infos_user['favoriteRecipes'])) {
+        if (isset($infosUser['favoriteRecipes'])) {
             // Fusionner avec les favoris de session existants
             $sessionFavorites = isset($_SESSION['favoriteRecipes']) ? $_SESSION['favoriteRecipes'] : array();
-            $fileFavorites = $infos_user['favoriteRecipes'];
+            $fileFavorites = $infosUser['favoriteRecipes'];
 
             // Union des deux tableaux (sans doublons)
             $merged = array_unique(array_merge($sessionFavorites, $fileFavorites));

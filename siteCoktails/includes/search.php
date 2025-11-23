@@ -1,3 +1,5 @@
+<?php
+?>
 <h2>Recherche</h2>
 
 <?php
