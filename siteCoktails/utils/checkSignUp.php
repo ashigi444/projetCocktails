@@ -130,10 +130,10 @@ function checkSignUp($username, $password, $lastname,
 
     return [
         'messages'=> $messages,
-        'messages_errors' => $messagesErrors,
-        'correct_signup' => $allCorrect,
-        'value_fields' => $valueFields,
-        'class_fields' => $classFields,
+        'messagesErrors' => $messagesErrors,
+        'correctSignup' => $allCorrect,
+        'valueFields' => $valueFields,
+        'classFields' => $classFields,
         'page' => $page
     ];
 }

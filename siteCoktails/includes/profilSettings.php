@@ -12,22 +12,19 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
         <fieldset>
             <legend>Compte</legend>
             <form class="form-settings" method="POST" action="#">
-                <label for="new_username">Identifiant&nbsp;:
-                    <input type="text" name="new_username" id="new_username"
+                <label for="username">Identifiant&nbsp;:
+                    <input type="text" name="username" id="username"
                            placeholder="Identifiant..."
                            value="<?php echo $infosUser['username']; ?>"
-                            <?php if (isset($classFields['username'])) { ?>
-                                class="<?php echo $classFields['username']; ?>"
-                            <?php } ?>
                            disabled="disabled"
                     />
                 </label>
                 <label for="statut" class="status-label">Statut de connexion&nbsp;:
-                    <input type="color" id="statut" name="statut"
+                    <input type="radio" class="status-radio" id="statut" name="statut"
                             <?php if(isset($connectionStatus)) { ?>
-                                value="#00FF00"
-                                disabled="disabled"
+                                checked
                             <?php } ?>
+                           disabled="disabled"
                     />
                 </label>
             </form>
@@ -86,25 +83,21 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
-                <label>
-                    Sexe&nbsp;:
-                    <input type="radio" name="newSexe" value="female"
-                            <?php if (isset($infosUser['sexe']) && $infosUser['sexe']=="female") { ?>
-                                checked="checked"
-                                <?php if (isset($classFields['sexe'])) { ?>
-                                    class="<?php echo $classFields['sexe']; ?>"
-                                <?php } ?>
-                            <?php } ?>
-                    />Femme
-                    <input type="radio" name="newSexe" value="male"
-                            <?php if (isset($infosUser['sexe']) && $infosUser['sexe']=="male") { ?>
-                                checked="checked"
-                                <?php if (isset($classFields['sexe'])) { ?>
-                                    class="<?php echo $classFields['sexe']; ?>"
-                                <?php } ?>
-                            <?php } ?>
-                    />Homme
-                </label>
+                <span class="sexe-wrapper">Sexe&nbsp;:
+                    <label for="female"
+                           class="sexe-radio <?php echo isset($classFields['sexe']) ? $classFields['sexe'] : ''; ?>">
+                    Femme
+                        <input class="input-sexe-radio" type="radio" id="female" name="newSexe" value="female"
+                        <?php if ($infosUser['sexe']=="female") echo 'checked'; ?>>
+                    </label>
+
+                    <label for="male"
+                           class="sexe-radio <?php echo isset($classFields['sexe']) ? $classFields['sexe'] : ''; ?>">
+                    Homme
+                        <input class="input-sexe-radio" type="radio" id="male" name="newSexe" value="male"
+                        <?php if ($infosUser['sexe']=="male") echo 'checked'; ?>>
+                    </label>
+                </span>
                 <button type="submit" class="button-update" id="updateSexe" name="action" value="updateSexe">
                     Modifier
                 </button>

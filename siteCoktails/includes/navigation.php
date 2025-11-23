@@ -8,31 +8,33 @@ if (isset($_GET['aliment'])) {
     $currentIngredient = 'Aliment';
 }
 
-if (!array_key_exists($currentIngredient, $Hierarchie)) {
-    $currentIngredient = 'Aliment';
+if(isset($Hierarchie)) {
+    if (!array_key_exists($currentIngredient, $Hierarchie)) {
+        $currentIngredient = 'Aliment';
+    }
 }
 
-$ingredientsValides = getIngredientsHierarchy($currentIngredient, $Hierarchie);
+$validIngredients = getIngredientsHierarchy($currentIngredient, $Hierarchie);
 
 // fil d'ariane 
 if (isset($_GET['path'])) {
     $pathString = $_GET['path'];
-    $breadcrumb = !empty($pathString) ? explode('>', $pathString) : array('Aliment');
+    $breadcrumbPath = !empty($pathString) ? explode('>', $pathString) : array('Aliment');
     // ajt un aliment courant si pas deja present
-    if (end($breadcrumb) !== $currentIngredient) {
-        $breadcrumb[] = $currentIngredient;
+    if (end($breadcrumbPath) !== $currentIngredient) {
+        $breadcrumbPath[] = $currentIngredient;
     }
 } else {
-    $breadcrumb = array('Aliment');
+    $breadcrumbPath = array('Aliment');
     if ($currentIngredient !== 'Aliment') {
-        $breadcrumb[] = $currentIngredient;
+        $breadcrumbPath[] = $currentIngredient;
     }
 }
 
 //recup des sous-categories
-$sousCategories = array();
+$subcategories = array();
 if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
-    $sousCategories = $Hierarchie[$currentIngredient]['sous-categorie'];
+    $subcategories = $Hierarchie[$currentIngredient]['sous-categorie'];
 }
 ?>
 
@@ -40,38 +42,38 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
     <div class="navigation-sidebar">
         <h3>Aliment courant</h3>
 
-        <div class="breadcrumb">
+        <div class="breadcrumb-path">
             <?php
             $pathSoFar = array();
-            foreach ($breadcrumb as $index => $aliment) {
+            foreach ($breadcrumbPath as $index => $aliment) {
                 if ($index > 0) {
-                    echo ' / ';
+                    echo ' / '; // A retirer et reflechir comment faire autrement
                 }
                 $pathSoFar[] = $aliment;
                 $pathParam = implode('>', array_slice($pathSoFar, 0, -1));
-                if ($aliment === $currentIngredient) {
-                    echo '<strong>' . htmlspecialchars($aliment) . '</strong>';
-                } else {
+                if ($aliment === $currentIngredient) { ?>
+                    <p class="p-breadcrumb-path"><strong><?php echo $aliment; ?></strong></p>
+                <?php } else {
                     $linkUrl = 'index.php?page=navigation&aliment=' . urlencode($aliment);
                     if (!empty($pathParam)) {
                         $linkUrl .= '&path=' . urlencode($pathParam);
-                    }
-                    echo '<a href="' . $linkUrl . '">' . htmlspecialchars($aliment) . '</a>';
-                }
+                    } ?>
+                    <a class="a-breadcrumb-path" href="<?php echo $linkUrl; ?>"> <?php echo $aliment; ?></a>
+                <?php }
             }
             ?>
         </div>
 
         <?php
-        $currentPath = implode('>', $breadcrumb);
-        if (count($sousCategories) > 0) { ?>
+        $currentPath = implode('>', $breadcrumbPath);
+        if (count($subcategories) > 0) { ?>
             <h4>Sous-cat&eacute;gories&nbsp;:</h4>
-            <ul class="sous-categories">
+            <ul class="subcategory">
                 <?php
-                foreach ($sousCategories as $sousCat) {
-                    $linkUrl = 'index.php?page=navigation&aliment=' . urlencode($sousCat) . '&path=' . urlencode($currentPath);
+                foreach ($subcategories as $subcat) {
+                    $linkUrl = 'index.php?page=navigation&aliment=' . urlencode($subcat) . '&path=' . urlencode($currentPath);
                     ?>
-                    <li><a href="<?php echo $linkUrl; ?>"><?php echo htmlspecialchars($sousCat); ?></a></li>
+                    <li><a href="<?php echo $linkUrl; ?>"><?php echo $subcat; ?></a></li>
                 <?php } ?>
             </ul>
         <?php } else { ?>
@@ -81,73 +83,76 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
 
     <div class="navigation-recipes">
         <h3>Liste des cocktails</h3>
-        <div class="liste-recettes">
-    <?php
-    foreach ($Recettes as $id =>$recette) {
-        $afficherRecette = false;
+        <?php if(isset($Recettes) && !empty($Recettes)) { ?>
+            <div class="liste-recettes">
+                <?php
+                foreach ($Recettes as $id => $recipe) {
+                    $allowPrintRecipe = false;
 
-        if ($currentIngredient == 'Aliment') {
-            $afficherRecette = true;
-        } else {
-            foreach ($recette['index'] as $ing) {
-                foreach ($ingredientsValides as $validIngredient) {
-                    if ($ing == $validIngredient) {
-                        $afficherRecette = true;
-                        break;
+                    if ($currentIngredient == 'Aliment') {
+                        $allowPrintRecipe = true;
+                    } else {
+                        foreach ($recipe['index'] as $ing) {
+                            foreach ($validIngredients as $validIngredient) {
+                                if ($ing == $validIngredient) {
+                                    $allowPrintRecipe = true;
+                                    break;
+                                }
+                            }
+                            if ($allowPrintRecipe) {
+                                break;
+                            }
+                        }
                     }
-                }
-                if ($afficherRecette) {
-                    break;
-                }
-            }
-        }
 
-        if ($afficherRecette) {
-            $imageName = makeFilenameImage($recette['titre']);
-            $cheminImage = 'resources/Photos/'.$imageName;
+                    if ($allowPrintRecipe) {
+                        $imageName = makeFilenameImage($recipe['titre']);
+                        $imagePath = 'resources/Photos/'.$imageName;
 
-            if (!file_exists($cheminImage)) {
-                $cheminImage = 'resources/Photos/default.jpg';
-            }
+                        if (!file_exists($imagePath)) {
+                            $imagePath = 'resources/Photos/default.jpg';
+                        }
 
-            // verif pour favori
-            $estFavori = isFavorite($id);
-            $heartClass = $estFavori ? 'heart-full' : 'heart-empty';
-            $heartSymbol = $estFavori ? '&#10084;' : '&#9825;';
+                        // verif pour favori
+                        $isFavorite = isFavorite($id);
+                        $heartClass = $isFavorite ? 'heart-full' : 'heart-empty';
+                        $heartSymbol = $isFavorite ? '&#10084;' /*coeur plein*/ : '&#9825;'; /*coeur vide*/
 
-            $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=navigation';
-            if ($currentIngredient !== 'Aliment') {
-                $toggleUrl .= '&aliment=' . urlencode($currentIngredient);
-            }
-            if (isset($currentPath) && !empty($currentPath)) {
-                $toggleUrl .= '&path=' . urlencode($currentPath);
-            }
+                        $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=navigation';
+                        if ($currentIngredient !== 'Aliment') {
+                            $toggleUrl .= '&aliment=' . urlencode($currentIngredient);
+                        }
+                        if (isset($currentPath) && !empty($currentPath)) {
+                            $toggleUrl .= '&path=' . urlencode($currentPath);
+                        }
 
-            // URL pour l'affichage detaille
-            $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $id;
-            ?>
-            <div class="cocktail-card">
-                <div class="card-header">
-                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></a>
-                    <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
-                        <?php echo $heartSymbol; ?>
-                    </a>
-                </div>
-                <div class="card-image">
-                    <img src="<?php echo $cheminImage; ?>" alt="<?php echo $recette['titre']; ?>">
-                </div>
-                <ul class="ingredients-list">
-                    <?php foreach($recette['index'] as $ing) { ?>
-                        <li>
-                            <?php echo $ing; ?>
-                        </li>
-                    <?php } ?>
-                </ul>
+                        // URL pour l'affichage detaille
+                        $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $id;
+                        ?>
+                        <div class="cocktail-card">
+                            <div class="card-header">
+                                <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recipe['titre']); ?></a>
+                                <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
+                                    <?php echo $heartSymbol; ?>
+                                </a>
+                            </div>
+                            <div class="card-image">
+                                <img src="<?php echo $imagePath; ?>" alt="<?php echo $recipe['titre']; ?>">
+                            </div>
+                            <ul class="ingredients-list">
+                                <?php foreach($recipe['index'] as $ing) { ?>
+                                    <li>
+                                        <?php echo $ing; ?>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <?php
+                    }
+                } ?>
             </div>
-            <?php
-        }
-    }
-    ?>
-        </div>
+        <?php }else{ ?>
+            <p>Rien&nbsp;&agrave;&nbsp;voir ici pour le moment...</p>
+        <?php } ?>
     </div>
 </div>

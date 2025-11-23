@@ -82,9 +82,9 @@ function saveUserInfos($username, $infosUser) {
     if (!is_dir('dataUsers')) {
         mkdir('dataUsers', 0755, true);
     }
-    $users_print = var_export($infosUser, true);
-    $users_put = "<?php\n\$infosUser = " . $users_print . ";\n?>";
-    file_put_contents($filename, $users_put);
+    $usersPrint = var_export($infosUser, true);
+    $usersPut = "<?php\n\$infosUser = " . $usersPrint . ";\n?>";
+    file_put_contents($filename, $usersPut);
 }
 
 /**
@@ -267,19 +267,19 @@ function checkSexeField($gender){
 
 
 // Fonction pour obtenir tous les aliments de la hierarchie (y compris sous-categories)
-function getIngredientsHierarchy($ingredientName, $hierarchie)
+function getIngredientsHierarchy($ingredientName, $hierarchy)
 {
-    $liste = array();
-    $liste[] = $ingredientName;
+    $list = array();
+    $list[] = $ingredientName;
 
-    if (isset($hierarchie[$ingredientName]['sous-categorie'])) {
-        foreach ($hierarchie[$ingredientName]['sous-categorie'] as $sousCat) {
-            $sousListe = getIngredientsHierarchy($sousCat, $hierarchie);
-            foreach ($sousListe as $element) {
-                $liste[] = $element;
+    if (isset($hierarchy[$ingredientName]['sous-categorie'])) {
+        foreach ($hierarchy[$ingredientName]['sous-categorie'] as $subCat) {
+            $subList = getIngredientsHierarchy($subCat, $hierarchy);
+            foreach ($subList as $element) {
+                $list[] = $element;
             }
         }
     }
-    return $liste;
+    return $list;
 }
 ?>

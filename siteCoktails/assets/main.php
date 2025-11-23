@@ -2,7 +2,7 @@
 <main>
     <?php
     // Affichage des messages d'erreurs si il y en a
-    if (!empty($messagesErrors)) { ?>
+    if (isset($messagesErrors) && !empty($messagesErrors)) { ?>
         <div class="message message-errors">
             <?php foreach ($messagesErrors as $mess) { ?>
                 <p><?php echo $mess; ?></p>
@@ -11,7 +11,7 @@
 
     <?php }
     // Affichage des messages classiques si il y en a
-    if (!empty($messages)) { ?>
+    if (isset($messages) && !empty($messages)) { ?>
         <div class="message">
             <?php foreach ($messages as $mess) { ?>
                 <p><?php echo $mess; ?></p>

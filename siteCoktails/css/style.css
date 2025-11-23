@@ -1,3 +1,4 @@
+/* La base */
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1em;
@@ -27,17 +28,6 @@ nav{
     border-bottom: 1px solid #DEDEDE;
 }
 
-nav div {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items:flex-end;
-}
-
-nav .form-signin{
-    margin-bottom:10px;
-}
-
 main {
     background-color:white;
     padding:20px 0;
@@ -52,6 +42,13 @@ footer {
 
 header h1 {
     margin: 0;
+}
+
+nav div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items:flex-end;
 }
 
 nav ul{
@@ -81,6 +78,7 @@ nav button:focus, nav .buttonLinkPage:focus, nav .button-signup:focus{
     padding:0 10px;
     background-color: dimgray;
     color:white;
+    cursor: pointer;
 }
 
 .button-sub:active, .button-update:active,
@@ -90,6 +88,83 @@ nav button:active, nav .buttonLinkPage:active, nav .button-signup:active{
 
 nav .button-signup{
     margin:0 5px;
+}
+
+nav .form-signin{
+    margin-bottom:10px;
+}
+
+.form-signup label, .form-signup button{
+    display: block;
+    padding:4px;
+}
+
+
+fieldset {
+    border: 1px solid #d0d0d0;
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+fieldset legend {
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 0 6px;
+    color: #333;
+}
+
+.form-settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+.form-settings label {
+    display: flex;
+    align-items: center;
+    padding:2px 2px;
+    gap:4px;
+    justify-content: space-between;
+}
+
+.button-update {
+    padding: 2px 10px;
+    font-size: 0.8em;
+}
+
+.form-settings .status-label {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.sexe-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sexe-radio {
+    display: inline;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+}
+
+.sexe-radio .error {
+    background-color: #ffe3e3;
+    border: 1px solid #c99;
+}
+
+.sexe-radio:hover, .input-sexe-radio:hover{
+    cursor: pointer;
+}
+
+.status-radio{
+    accent-color:#40ff40;
 }
 
 .message{
@@ -109,12 +184,6 @@ nav .button-signup{
     border:1px solid #c99;
     border-radius:5px;
     padding:3px;
-    /*colorblack*/
-}
-
-.form-signup label, .form-signup button{
-    display: block;
-    padding:4px;
 }
 
 .liste-recettes {
@@ -264,54 +333,6 @@ nav .button-signup{
     font-family: monospace;
 }
 
-fieldset {
-    border: 1px solid #d0d0d0;
-    padding: 15px 20px;
-    margin: 20px 0;
-    border-radius: 6px;
-    background: #fafafa;
-}
-
-fieldset legend {
-    font-weight: bold;
-    font-size: 1.1em;
-    padding: 0 6px;
-    color: #333;
-}
-
-.form-settings {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0;
-    flex-wrap: wrap;
-}
-
-.form-settings label {
-    min-width: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.button-update {
-    padding: 2px 10px;
-    font-size: 0.8em;
-}
-
-.form-settings input{
-    margin-left: 10px;
-    margin-right: 5px;
-    transform: scale(1.1);
-}
-
-.form-settings .status-label {
-    flex-basis: 100%;
-    justify-content: flex-start;
-    gap: 10px;
-}
-
-/*barre de gauche*/ 
 .navigation-container {
     display: flex;
     gap: 20px;
@@ -340,7 +361,7 @@ fieldset legend {
     font-size: 1em;
 }
 
-.breadcrumb {
+.breadcrumb-path {
     background: #fff;
     padding: 10px;
     border: 1px solid #e0e0e0;
@@ -348,31 +369,31 @@ fieldset legend {
     font-size: 0.95em;
 }
 
-.breadcrumb a {
+.breadcrumb-path a {
     color: #3498db;
     text-decoration: none;
 }
 
-.breadcrumb a:hover {
+.breadcrumb-path a:hover {
     text-decoration: underline;
 }
 
-.sous-categories {
+.subcategory {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.sous-categories li {
+.subcategory li {
     padding: 5px 0;
     border-bottom: 1px solid #eee;
 }
 
-.sous-categories li:last-child {
+.subcategory li:last-child {
     border-bottom: none;
 }
 
-.sous-categories a {
+.subcategory a {
     color: #3498db;
     text-decoration: none;
     display: block;
@@ -380,7 +401,7 @@ fieldset legend {
     border-radius: 3px;
 }
 
-.sous-categories a:hover {
+.subcategory a:hover {
     background: #e8f4fc;
     text-decoration: none;
 }
@@ -413,7 +434,6 @@ a.cocktail-title:hover {
     text-decoration: underline;
 }
 
-/* detail recette */
 .recipe-detail {
     max-width: 800px;
 }

@@ -8,8 +8,12 @@ function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
     $allowsUpdate = true;
 
     if (!isset($_SESSION['user']['username'])) {
-        $messagesErrors[] = "Vous n'êtes pas connecté.";
+        $messagesErrors[] = "Vous n&apos;&ecirc;tes pas connect&eacute;.";
         $allowsUpdate = false;
+    }
+
+    if(isset($newValue) && empty(trim($newValue))) { // le cas rempli d'espaces
+        $allowsUpdate=false;
     }
 
     $username = $_SESSION['user']['username'];
@@ -50,8 +54,8 @@ function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
         $classFields="error";
         return [
             'messages' => $messages,
-            'messages_errors' => $messagesErrors,
-            'class_fields' => $classFields,
+            'messagesErrors' => $messagesErrors,
+            'classFields' => $classFields,
             'allowsUpdate' => $allowsUpdate
         ];
     }
@@ -59,8 +63,8 @@ function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
     $messages[] = $successMsg;
     return [
         'messages' => $messages,
-        'messages_errors' => $messagesErrors,
-        'class_fields' => $classFields,
+        'messagesErrors' => $messagesErrors,
+        'classFields' => $classFields,
         'allowsUpdate' => $allowsUpdate
     ];
 }

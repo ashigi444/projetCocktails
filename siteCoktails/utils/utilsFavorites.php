@@ -141,6 +141,7 @@ function saveFavoritesToFile($favorites, $username) {
  * Appele lors de la connexion
  *
  * @param string $username Nom d'utilisateur
+ * @return array soit la liste de recettes, soit une liste vide
  */
 function loadFavoritesFromFile($username) {
     $filename=makeFilenameUser($username);
@@ -162,8 +163,9 @@ function loadFavoritesFromFile($username) {
 
             // Union des deux tableaux (sans doublons)
             $merged = array_unique(array_merge($sessionFavorites, $fileFavorites));
-            $_SESSION['favoriteRecipes'] = array_values($merged);
+            return array_values($merged);
         }
     }
+    return [];
 }
 ?>

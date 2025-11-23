@@ -43,54 +43,58 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
     }else if(strstr($action, "update") && $connectionStatus){ // Si c'est une mise a jour du profil,
         require "utils/checkUpdate.php";
 
-        $newLastName=isset($_POST['newLastname']) ? $_POST['newLastname'] : null;
-        $newFirstName=isset($_POST['newFirstname']) ? $_POST['newFirstname'] : null;
-        $newBirthdate=isset($_POST['newBirthdate']) ? $_POST['newBirthdate'] : null;
-        $newGender=isset($_POST['newSexe']) ? $_POST['newSexe'] : null;
-
         $classFields = [];
         $allowsUpdate=false;
         $result = [];
 
         if($action=="updateLastname"){
-            $result=checkUpdateLastname($newLastName);
-            $allowsUpdate=$result['allowsUpdate'];
-            $messages=$result['messages'];
-            $messagesErrors=$result['messages_errors'];
-            if($allowsUpdate){
-                applyUpdateFile('lastname', $newLastName);
-            }else{
-                $classFields['lastname']=$result['class_fields'];
+            $newLastname=isset($_POST['newLastname']) ? $_POST['newLastname'] : null;
+            if(isset($newLastname)){
+                $result=checkUpdateLastname($newLastname);
+                $allowsUpdate=$result['allowsUpdate'];
+                $messages=$result['messages'];
+                $messagesErrors=$result['messagesErrors'];
+                if($allowsUpdate){
+                    applyUpdateFile('lastname', $newLastname);
+                }else{
+                    $classFields['lastname']=$result['classFields'];
+                }
             }
         }else if($action=="updateFirstname"){
-            $result=checkUpdateFirstname($newFirstName);
+            $newFirstname=isset($_POST['newFirstname']) && !empty(trim($_POST['newFirstname'])) ? $_POST['newFirstname'] : null;
+
+            $result=checkUpdateFirstname($newFirstname);
             $allowsUpdate=$result['allowsUpdate'];
             $messages=$result['messages'];
-            $messagesErrors=$result['messages_errors'];
+            $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
-                applyUpdateFile('firstname', $newFirstName);
+                applyUpdateFile('firstname', $newFirstname);
             }else{
-                $classFields['firstname']=$result['class_fields'];
+                $classFields['firstname']=$result['classFields'];
             }
         }else if($action=="updateBirthdate"){
+            $newBirthdate=isset($_POST['newBirthdate']) && !empty(trim($_POST['newBirthdate'])) ? $_POST['newBirthdate'] : null;
+
             $result=checkUpdateBirthdate($newBirthdate);
             $allowsUpdate=$result['allowsUpdate'];
             $messages=$result['messages'];
-            $messagesErrors=$result['messages_errors'];
+            $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
                 applyUpdateFile('birthdate', $newBirthdate);
             }else{
-                $classFields['birthdate']=$result['class_fields'];
+                $classFields['birthdate']=$result['classFields'];
             }
         }else if($action=="updateSexe"){
+            $newGender=isset($_POST['newSexe']) && !empty(trim($_POST['newSexe'])) ? $_POST['newSexe'] : null;
+
             $result=checkUpdateSexe($newGender);
             $allowsUpdate=$result['allowsUpdate'];
             $messages=$result['messages'];
-            $messagesErrors=$result['messages_errors'];
+            $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
                 applyUpdateFile('sexe', $newGender);
             }else{
-                $classFields['sexe']=$result['class_fields'];
+                $classFields['sexe']=$result['classFields'];
             }
         }else{
             $messagesErrors[] = "Une erreur est survenue.";
@@ -118,10 +122,10 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
 
                 // Puis on recupere les resultats
                 $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
-                $messagesErrors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
-                $allCorrect = isset($resultat['correct_signup']) ? $resultat['correct_signup'] : false;
-                $valueFields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
-                $classFields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
+                $messagesErrors = isset($resultat['messagesErrors']) ? $resultat['messagesErrors'] : [];
+                $allCorrect = isset($resultat['correctSignup']) ? $resultat['correctSignup'] : false;
+                $valueFields = isset($resultat['valueFields']) ? $resultat['valueFields'] : [];
+                $classFields = isset($resultat['classFields']) ? $resultat['classFields'] : [];
                 $page = isset($resultat['page']) ? $resultat['page'] : $page;
 
             } else { // Si l'action est une connexion, on traite avec la fonction dediee
@@ -130,10 +134,10 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
 
                 // Puis on recupere les resultats
                 $messages = isset($resultat['messages']) ? $resultat['messages'] : [];
-                $messagesErrors = isset($resultat['messages_errors']) ? $resultat['messages_errors'] : [];
-                $allCorrect = isset($resultat['correct_connection']) ? $resultat['correct_connection'] : false;
-                $valueFields = isset($resultat['value_fields']) ? $resultat['value_fields'] : [];
-                $classFields = isset($resultat['class_fields']) ? $resultat['class_fields'] : [];
+                $messagesErrors = isset($resultat['messagesErrors']) ? $resultat['messagesErrors'] : [];
+                $allCorrect = isset($resultat['correctConnection']) ? $resultat['correctConnection'] : false;
+                $valueFields = isset($resultat['valueFields']) ? $resultat['valueFields'] : [];
+                $classFields = isset($resultat['classFields']) ? $resultat['classFields'] : [];
                 $page = isset($resultat['page']) ? $resultat['page'] : $page;
             }
 
@@ -146,7 +150,7 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
                 $_SESSION['user']['firstname'] = !empty($firstname) ? $firstname : null;
                 $_SESSION['user']['birthdate'] = !empty($birthdate) ? $birthdate : null;
                 $_SESSION['user']['sexe'] = !empty($gender) ? $gender : null;
-                loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
+                $_SESSION['favoriteRecipes'] = loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
                 $_COOKIE['user'] = $_SESSION['user']; // recopie les infos de session dans le cookie
                 $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
             }

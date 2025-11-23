@@ -13,13 +13,13 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
     <p><a href="index.php?page=navigation">Retour &agrave; la navigation</a></p>
     <?php
 } else {
-    $recette = $Recettes[$recipeId];
+    $recipe = $Recettes[$recipeId];
 
     // preparer l'image
-    $imageName = makeFilenameImage($recette['titre']);
-    $cheminImage = 'resources/Photos/' . $imageName;
-    if (!file_exists($cheminImage)) {
-        $cheminImage = 'resources/Photos/default.jpg';
+    $imageName = makeFilenameImage($recipe['titre']);
+    $imagePath = 'resources/Photos/' . $imageName;
+    if (!file_exists($imagePath)) {
+        $imagePath = 'resources/Photos/default.jpg';
     }
 
     //verifier si lee statut est favori
@@ -29,12 +29,12 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
     $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=recipeDetail';
 
     //parser les ingredients
-    $ingredientsDetail = explode('|', $recette['ingredients']);
+    $ingredientsDetail = explode('|', $recipe['ingredients']);
     ?>
 
     <div class="recipe-detail">
         <div class="recipe-header">
-            <h2><?php echo htmlspecialchars($recette['titre']); ?></h2>
+            <h2><?php echo htmlspecialchars($recipe['titre']); ?></h2>
             <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
                 <?php echo $heartSymbol; ?>
             </a>
@@ -42,7 +42,7 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
 
         <div class="recipe-content">
             <div class="recipe-image">
-                <img src="<?php echo $cheminImage; ?>" alt="<?php echo htmlspecialchars($recette['titre']); ?>">
+                <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($recipe['titre']); ?>">
             </div>
 
             <div class="recipe-info">
@@ -54,7 +54,7 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
                 </ul>
 
                 <h3>Pr&eacute;paration</h3>
-                <p class="recipe-preparation"><?php echo htmlspecialchars($recette['preparation']); ?></p>
+                <p class="recipe-preparation"><?php echo htmlspecialchars($recipe['preparation']); ?></p>
             </div>
         </div>
 

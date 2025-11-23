@@ -22,28 +22,28 @@ if (count($favorites) > 0) { ?>
                 continue;
             }
 
-            $recette = $Recettes[$recipeId];
-            $imageName = makeFilenameImage($recette['titre']);
-            $cheminImage = 'resources/Photos/' . $imageName;
+            $recipe = $Recettes[$recipeId];
+            $imageName = makeFilenameImage($recipe['titre']);
+            $imagePath = 'resources/Photos/' . $imageName;
 
-            if (!file_exists($cheminImage)) {
-                $cheminImage = 'resources/Photos/default.jpg';
+            if (!file_exists($imagePath)) {
+                $imagePath = 'resources/Photos/default.jpg';
             }
             $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
             $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $recipeId;
             ?>
             <div class="cocktail-card">
                 <div class="card-header">
-                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recette['titre']); ?></a>
+                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recipe['titre']); ?></a>
                     <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
                         &#10084;
                     </a>
                 </div>
                 <div class="card-image">
-                    <img src="<?php echo $cheminImage; ?>" alt="<?php echo $recette['titre']; ?>">
+                    <img src="<?php echo $imagePath; ?>" alt="<?php echo $recipe['titre']; ?>">
                 </div>
                 <ul class="ingredients-list">
-                    <?php foreach ($recette['index'] as $ing) { ?>
+                    <?php foreach ($recipe['index'] as $ing) { ?>
                         <li>
                             <?php echo $ing; ?>
                         </li>
@@ -55,6 +55,6 @@ if (count($favorites) > 0) { ?>
         ?>
     </div>
 <?php } else { ?>
-    <p>Vous n&apos;avez aucune recette dans vos favoris pour le moment...</p>
+    <p>Vous n&apos;avez pas de recettes dans vos favoris...</p>
     <p>Cliquez <a href="index.php?page=navigation">ici</a> pour parcourir les recettes et en ajouter.</p>
 <?php } ?>

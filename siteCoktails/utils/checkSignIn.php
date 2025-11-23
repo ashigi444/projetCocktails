@@ -24,7 +24,7 @@ function checkSignIn($username, $password)
     $allCorrect=true;
     $valueFields=['signinForm'=>[], 'signupForm'=>[]];
     $classFields=['signinForm'=>[], 'signupForm'=>[]];
-    $page=isset($_GET['page']) ? $_GET['page'] : 'accueil';
+    $page=isset($_GET['page']) ? $_GET['page'] : 'navigation';
 
     $validUsername = checkUsernameField($username);
     $validPassword = checkPasswordField($password);
@@ -94,10 +94,10 @@ function checkSignIn($username, $password)
 
     return [
         'messages' => $messages,
-        'messages_errors' => $messagesErrors,
-        'correct_connection' => $allCorrect,
-        'value_fields' => $valueFields,
-        'class_fields' => $classFields,
+        'messagesErrors' => $messagesErrors,
+        'correctConnection' => $allCorrect,
+        'valueFields' => $valueFields,
+        'classFields' => $classFields,
         'page' => $page
     ];
 }

@@ -94,11 +94,11 @@ function getExactIngredientName($ingredient, $hierarchie) {
 }
 
 
-function recipeContainsIngredient($recette, $ingredient, $hierarchie) {
+function recipeContainsIngredient($recipe, $ingredient, $hierarchy) {
 
-    $validIngredients = getIngredientsHierarchy($ingredient, $hierarchie);
+    $validIngredients = getIngredientsHierarchy($ingredient, $hierarchy);
 
-    foreach ($recette['index'] as $ing) {
+    foreach ($recipe['index'] as $ing) {
         foreach ($validIngredients as $validIngredient) {
             if (strcasecmp($ing, $validIngredient) === 0) {
                 return true;
