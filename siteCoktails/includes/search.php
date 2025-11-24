@@ -11,14 +11,16 @@ if (isset($search) && !empty(trim($search))) { ?>
         Votre requ&ecirc;te&nbsp;:&nbsp;&quot;<strong>
             <?php echo replaceSearchByEntity("text", $search); ?>
         </strong>&quot;
-    </p>;
+    </p>
 
     <?php
     $parsed = parseSearchQuery($search);
 
-    if ($parsed['error'] !== null) {
-        echo '<div class="message message-errors"><p>' . $parsed['error'] . '</p></div>';
-    } else {
+    if ($parsed['error'] !== null) { ?>
+        <div class="message message-errors">
+            <p> <?php echo $parsed['error']; ?></p>
+        </div>
+    <?php } else {
         $wantedRecognized = array();
         $unwantedRecognized = array();
         $notRecognized = array();
@@ -113,12 +115,12 @@ if (isset($search) && !empty(trim($search))) { ?>
 
             <div class="search-results-count">
                 <p>
-                    <strong><?php echo $fullMatches; ?></strong>&nbsp;
+                    <strong><?php echo $fullMatches; ?></strong>
                     recette(s) satisfont enti&egrave;rement la recherche.
                 </p>
                 <?php if ($isApproximate && $partialMatches > 0) { ?>
                     <p>
-                        <strong><?php echo $partialMatches; ?></strong>&nbsp;
+                        <strong><?php echo $partialMatches; ?></strong>
                         recette(s) satisfont partiellement la recherche.
                     </p>
                 <?php } ?>
@@ -132,25 +134,25 @@ if (isset($search) && !empty(trim($search))) { ?>
                         $recipe = $res['recette'];
                         $percentage = $res['percentage'];
 
-                        $imageName = makeFilenameImage($recipe['titre']);
-                        $cheminImage = 'resources/Photos/' . $imageName;
+                        $imageName = makeFilenameImage($recipe['titre']); // voir pour "deredondancer"
+                        $imagePath = 'resources/Photos/' . $imageName;
 
-                        if (!file_exists($cheminImage)) {
-                            $cheminImage = 'resources/Photos/default.jpg';
+                        if (!file_exists($imagePath)) {
+                            $imagePath = 'resources/Photos/default.jpg';
                         }
 
                         // verif pour favori
-                        $estFavori = isFavorite($id);
-                        $heartClass = $estFavori ? 'heart-full' : 'heart-empty';
-                        $heartSymbol = $estFavori ? '&#10084;' : '&#9825;';
+                        $isFavorites = isFavorite($id);
+                        $heartClass = $isFavorites ? 'heart-full' : 'heart-empty';
+                        $heartSymbol = $isFavorites ? '&#10084;' : '&#9825;';
 
                         $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=search&search=' . urlencode($search);
                         ?>
                         <?php $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $id; ?>
                         <div class="cocktail-card">
                             <div class="card-header">
-                                <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recipe['titre']); ?></a>
-                                <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
+                                <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo $recipe['titre']; ?></a>
+                                <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $isFavorites ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
                                     <?php echo $heartSymbol; ?>
                                 </a>
                             </div>
@@ -158,7 +160,7 @@ if (isset($search) && !empty(trim($search))) { ?>
                                 Score&nbsp;:&nbsp;<?php echo round($percentage); ?>%
                             </div>
                             <div class="card-image">
-                                <img src="<?php echo $cheminImage; ?>" alt="<?php echo htmlspecialchars($recipe['titre']); ?>">
+                                <img src="<?php echo $imagePath; ?>" alt="<?php echo $recipe['titre']; ?>">
                             </div>
                             <ul class="ingredients-list">
                                 <?php

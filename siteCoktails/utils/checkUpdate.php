@@ -39,8 +39,8 @@ function updateField($typeUpdate, $newValue, $successMsg, $errorMsg) {
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allowsUpdate = false;
             }
-        }else if($typeUpdate == "updateSexe"){
-            if(!checkSexeField($newValue) || checkSexeFile($newValue, $infosUser)){
+        }else if($typeUpdate == "updateGender"){
+            if(!checkGenderField($newValue) || checkGenderFile($newValue, $infosUser)){
                 // Si le champ est mauvais OU si c'est le meme que l'ancien
                 $allowsUpdate = false;
             }
@@ -96,12 +96,12 @@ function checkUpdateBirthdate($newBirthdate){
     );
 }
 
-function checkUpdateSexe($newGender){
+function checkUpdateGender($newGender){
     return updateField(
-        "updateSexe",
+        "updateGender",
         $newGender,
         "Sexe modifi&eacute;.",
-        "Impossible de modifier le sexe."
+        "Impossible de modifier le gender."
     );
 }
 
@@ -116,14 +116,35 @@ function applyUpdateFile($fieldKey, $newValue){
         return;
     }
 
-    if ($fieldKey === 'password') {
+    /*if ($fieldKey == 'password') {
         $infosUser['password'] = password_hash($newValue, PASSWORD_DEFAULT);
-    } else {
+    } else {*/
         $infosUser[$fieldKey] = $newValue;
-    }
+    /*}*/
 
     // On ne touche pas au reste
     saveUserInfos($username, $infosUser);
+}
+
+
+function resetLastname(){
+    applyUpdateFile('lastname', '');
+    return "Nom r&eacute;initialis&eacute;.";
+}
+
+function resetFirstname(){
+    applyUpdateFile('firstname', '');
+    return "Pr&eacute;nom r&eacute;initialis&eacute;.";
+}
+
+function resetBirthdate(){
+    applyUpdateFile('birthdate', '');
+    return "Date de naissance r&eacute;initialis&eacute;.";
+}
+
+function resetGender(){
+    applyUpdateFile('gender', '');
+    return "Sexe r&eacute;initialis&eacute;.";
 }
 
 ?>

@@ -34,7 +34,7 @@ if (count($favorites) > 0) { ?>
             ?>
             <div class="cocktail-card">
                 <div class="card-header">
-                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo htmlspecialchars($recipe['titre']); ?></a>
+                    <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo $recipe['titre']; ?></a>
                     <a href="<?php echo $toggleUrl; ?>" class="favorite-btn heart-full" title="Retirer des favoris">
                         &#10084;
                     </a>

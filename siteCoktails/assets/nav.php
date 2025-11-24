@@ -54,7 +54,7 @@
 
         <?php if (isset($user) && !empty($user)) { ?>
             <p>
-                <a href="index.php?page=profilSettings">Profil&nbsp;:</a>
+                <a class="buttonLinkPage" href="index.php?page=profilSettings">Profil&nbsp;:</a>
                 <strong><?php echo $user['username'] ; ?></strong>
             </p>
         <?php } ?>
@@ -65,16 +65,16 @@
             <?php } else { ?>
                 <label for="signin_username">
                     <input
-                            id="signin_username" type="text" name="username" placeholder="Identifiant" required="required"
-                            <?php
-                            // Si le username existe deja et qu'il est valide, on le reecrit
-                            if(isset($valueFields['signinForm']['username'])){ ?>
-                                value="<?php echo $valueFields['signinForm']['username']; ?>"
-                            <?php }
-                            // Si il a une class de style, on l'applique
-                            if(isset($classFields['signinForm']['username'])) { ?>
-                                class="<?php echo $classFields['signinForm']['username']; ?>"
-                            <?php } ?>
+                        id="signin_username" type="text" name="username" placeholder="Identifiant" required="required"
+                        <?php
+                        // Si le username existe deja et qu'il est valide, on le reecrit
+                        if(isset($valueFields['signinForm']['username'])){ ?>
+                            value="<?php echo $valueFields['signinForm']['username']; ?>"
+                        <?php }
+                        // Si il a une class de style, on l'applique
+                        if(isset($classFields['signinForm']['username'])) { ?>
+                            class="<?php echo $classFields['signinForm']['username']; ?>"
+                        <?php } ?>
                     />
                 </label>
                 <label for="signin_password">

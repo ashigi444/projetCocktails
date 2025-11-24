@@ -170,9 +170,9 @@ function checkBirthdateFile($birthdate, $infosUser){
         $birthdate == $infosUser['birthdate'];
 }
 
-function checkSexeFile($gender, $infosUser){
-    return isset($infosUser['sexe']) &&
-        $gender == $infosUser['sexe'];
+function checkGenderFile($gender, $infosUser){
+    return isset($infosUser['gender']) &&
+        $gender == $infosUser['gender'];
 }
 
 // Toutes les fonctions de verification de champ, a modifier avec des regex plus strictes
@@ -254,13 +254,13 @@ function checkBirthdateField($birthdate){
 }
 
 /**
- * Verifie si le sexe est correct par rapport a une regex qui match sur 'male' ou 'female'
- * le sexe provient normalement d'un champ rempli par l'utilisateur
+ * Verifie si le gender est correct par rapport a une regex qui match sur 'male' ou 'female'
+ * le gender provient normalement d'un champ rempli par l'utilisateur
  *
- * @param string $gender le sexe a verifier
- * @return bool true si le sexe existe, n'est pas vide et passe la regex, false sinon
+ * @param string $gender le gender a verifier
+ * @return bool true si le gender existe, n'est pas vide et passe la regex, false sinon
  */
-function checkSexeField($gender){
+function checkGenderField($gender){
     // Vide autorise car champ optionnel
     return !isset($gender) || empty(trim($gender)) || preg_match("/^(male|female)$/", $gender);
 }

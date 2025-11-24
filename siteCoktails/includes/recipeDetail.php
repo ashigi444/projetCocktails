@@ -34,7 +34,7 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
 
     <div class="recipe-detail">
         <div class="recipe-header">
-            <h2><?php echo htmlspecialchars($recipe['titre']); ?></h2>
+            <h2><?php echo $recipe['titre']; ?></h2>
             <a href="<?php echo $toggleUrl; ?>" class="favorite-btn <?php echo $heartClass; ?>" title="<?php echo $estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'; ?>">
                 <?php echo $heartSymbol; ?>
             </a>
@@ -42,19 +42,19 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
 
         <div class="recipe-content">
             <div class="recipe-image">
-                <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($recipe['titre']); ?>">
+                <img src="<?php echo $imagePath; ?>" alt="<?php echo $recipe['titre']; ?>">
             </div>
 
             <div class="recipe-info">
                 <h3>Ingr&eacute;dients</h3>
                 <ul class="ingredients-detail-list">
                     <?php foreach ($ingredientsDetail as $ingredient) { ?>
-                        <li><?php echo htmlspecialchars(trim($ingredient)); ?></li>
+                        <li><?php echo trim($ingredient); ?></li>
                     <?php } ?>
                 </ul>
 
                 <h3>Pr&eacute;paration</h3>
-                <p class="recipe-preparation"><?php echo htmlspecialchars($recipe['preparation']); ?></p>
+                <p class="recipe-preparation"><?php echo $recipe['preparation']; ?></p>
             </div>
         </div>
 

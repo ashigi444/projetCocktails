@@ -13,7 +13,7 @@ require_once "utils/utils.php";
  * @param string $lastname le nom saisit par l'utilisateur
  * @param string $firstname le prenom saisit par l'utilisateur
  * @param string $birthdate la date d'anniversaire saisit par l'utilisateur
- * @param string $gender le sexe coche par l'utilisateur
+ * @param string $gender le gender coche par l'utilisateur
  * @return array le tableau qui contient tout les resultats,
  *       -  le booleen qui indique la validite de la creation du compte,
  *       -  les messages (classiques ou d'erreurs) a afficher a l'utilisateur,
@@ -34,7 +34,7 @@ function checkSignUp($username, $password, $lastname,
     $validLastName=checkLastnameField($lastname); // true si lastname correct, false sinon
     $validFirstName=checkFirstnameField($firstname); // true si firstname correct, false sinon
     $validBirthdate=checkBirthdateField($birthdate); // true si birthdate correct, false sinon
-    $validGender=checkSexeField($gender); // true si sexe correct, false sinon
+    $validGender=checkGenderField($gender); // true si gender correct, false sinon
     $validFields = $validUsername && $validPassword &&
         $validLastName && $validFirstName &&
         $validBirthdate && $validGender; // true si tout est correct, false sinon
@@ -52,7 +52,7 @@ function checkSignUp($username, $password, $lastname,
                 'lastname' => $lastname,
                 'firstname' => $firstname,
                 'birthdate' => $birthdate,
-                'sexe' => $gender,
+                'gender' => $gender,
                 'favoriteRecipes' => $sessionFavorites, // Transfert des favoris de session
             ];
 
@@ -118,10 +118,10 @@ function checkSignUp($username, $password, $lastname,
         }
 
         if (!$validGender) {
-            $classFields['signupForm']['sexe']="error";
-            $messagesErrors[]="Le sexe est invalide.";
+            $classFields['signupForm']['gender']="error";
+            $messagesErrors[]="Le gender est invalide.";
         } else {
-            $valueFields['signupForm']['sexe']=$gender;
+            $valueFields['signupForm']['gender']=$gender;
         }
 
         $allCorrect=false;

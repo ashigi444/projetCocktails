@@ -1,8 +1,19 @@
 <?php
 session_start();
-if(!isset($_COOKIE['user'])) {
-    setcookie("user", "", time() + 3600 * 24); // cookies qui reste 24heures pour le moment
-}
+
+// cookies qui restent 24h (pour le moment)
+if(!isset($_COOKIE['usernameUser']))
+    setcookie("usernameUser", "", time()+3600*24);
+if(!isset($_COOKIE['lastnameUser']))
+    setcookie("lastnameUser", "", time()+3600*24);
+if(!isset($_COOKIE['firstnameUser']))
+    setcookie("firstnameUser", "", time()+3600*24);
+if(!isset($_COOKIE['birthdateUser']))
+    setcookie("birthdateUser", "", time()+3600*24);
+if(!isset($_COOKIE['genderUser']))
+    setcookie("genderUser", "", time()+3600*24);
+if(!isset($_COOKIE['favoriteRecipes']))
+    setcookie("favoriteRecipes", "", time()+3600*24);
 
 require_once "utils/utils.php";
 require_once "utils/utilsFavorites.php";
@@ -56,6 +67,8 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
                 $messagesErrors=$result['messagesErrors'];
                 if($allowsUpdate){
                     applyUpdateFile('lastname', $newLastname);
+                    $_SESSION['user']['lastname'] = $newLastname;
+                    setcookie("lastnameUser", $newLastname, time()+3600*24);
                 }else{
                     $classFields['lastname']=$result['classFields'];
                 }
@@ -69,6 +82,8 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
             $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
                 applyUpdateFile('firstname', $newFirstname);
+                $_SESSION['user']['firstname']=$newFirstname;
+                setcookie("firstnameUser", $newFirstname, time()+3600*24);
             }else{
                 $classFields['firstname']=$result['classFields'];
             }
@@ -81,25 +96,51 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
             $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
                 applyUpdateFile('birthdate', $newBirthdate);
+                $_SESSION['user']['birthdate']=$newBirthdate;
+                setcookie('birthdateUser', $newBirthdate, time()+3600*24);
             }else{
                 $classFields['birthdate']=$result['classFields'];
             }
-        }else if($action=="updateSexe"){
-            $newGender=isset($_POST['newSexe']) && !empty(trim($_POST['newSexe'])) ? $_POST['newSexe'] : null;
+        }else if($action=="updateGender"){
+            $newGender=isset($_POST['newGender']) && !empty(trim($_POST['newGender'])) ? $_POST['newGender'] : null;
 
-            $result=checkUpdateSexe($newGender);
+            $result=checkUpdateGender($newGender);
             $allowsUpdate=$result['allowsUpdate'];
             $messages=$result['messages'];
             $messagesErrors=$result['messagesErrors'];
             if($allowsUpdate){
-                applyUpdateFile('sexe', $newGender);
+                applyUpdateFile('gender', $newGender);
+                $_SESSION['user']['gender']=$newGender;
+                setcookie("genderUser", $newGender, time()+3600*24);
             }else{
-                $classFields['sexe']=$result['classFields'];
+                $classFields['gender']=$result['classFields'];
             }
         }else{
             $messagesErrors[] = "Une erreur est survenue.";
         }
 
+    }else if(strstr($action, "reset") && $connectionStatus){
+        require "utils/checkUpdate.php";
+        $infosUser=loadUserInfos($_SESSION['user']['username']);
+        if(isset($infosUser) && !empty($infosUser)) {
+            if ($action == "resetLastname" && !checkLastnameFile("", $infosUser)) {
+                $messages[]=resetLastname();
+                unset($_SESSION['user']['lastname']);
+                setcookie("lastnameUser", "", time() + 3600 * 24);
+            } else if ($action == "resetFirstname" && !checkFirstnameFile("", $infosUser)) {
+                $messages[]=resetFirstname();
+                unset($_SESSION['user']['firstname']);
+                setcookie("firstnameUser", "", time() + 3600 * 24);
+            } else if ($action == "resetBirthdate" && !checkBirthdateFile("", $infosUser)) {
+                $messages[]=resetBirthdate();
+                unset($_SESSION['user']['birthdate']);
+                setcookie("birthdateUser", "", time() + 3600 * 24);
+            } else if ($action == "resetGender" && !checkGenderFile("", $infosUser)) {
+                $messages[]=resetGender();
+                unset($_SESSION['user']['gender']);
+                setcookie("genderUser", "", time() + 3600 * 24);
+            }
+        }
     }else if($action == "signup" || $action == "signin"){ // Si c'est une connexion ou inscription
         if(!$connectionStatus) {
             // On recupere les variables necessaires au traitement
@@ -108,7 +149,7 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
             $lastname = isset($_POST['lastname']) ? trim($_POST['lastname']) : '';
             $firstname = isset($_POST['firstname']) ? trim($_POST['firstname']) : '';
             $birthdate = isset($_POST['birthdate']) ? trim($_POST['birthdate']) : '';
-            $gender = isset($_POST['sexe']) ? trim($_POST['sexe']) : '';
+            $gender = isset($_POST['gender']) ? trim($_POST['gender']) : '';
 
             // Et on creer celle qui permettront de validier ou non l'action,
             //       et de reafficher les champs necessaires en cas d'erreur
@@ -144,15 +185,31 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
             // Validation de la connexion (commune a signup + signin)
             if (isset($allCorrect) && $allCorrect) { // Si tout est correct, alors on creer la session
                 session_regenerate_id(true);
-                // recupere toutes les infos de session utilisateur
-                $_SESSION['user']['username'] = !empty($username) ? $username : null;
-                $_SESSION['user']['lastname'] = !empty($lastname) ? $lastname : null;
-                $_SESSION['user']['firstname'] = !empty($firstname) ? $firstname : null;
-                $_SESSION['user']['birthdate'] = !empty($birthdate) ? $birthdate : null;
-                $_SESSION['user']['sexe'] = !empty($gender) ? $gender : null;
-                $_SESSION['favoriteRecipes'] = loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
-                $_COOKIE['user'] = $_SESSION['user']; // recopie les infos de session dans le cookie
-                $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
+
+                $infosUser = loadUserInfos($username); // charge les infos de l'utilisateur depuis le fichier
+
+                if(isset($infosUser) && !empty($infosUser)){
+                    // recupere toutes les infos de session utilisateur
+                    $_SESSION['user']['username'] = (isset($infosUser['username']) && !empty(trim($infosUser['username']))) ? $infosUser['username'] : null;
+                    $_SESSION['user']['lastname'] = (isset($infosUser['lastname']) && !empty(trim($infosUser['lastname']))) ? $infosUser['lastname'] : null;
+                    $_SESSION['user']['firstname'] = (isset($infosUser['firstname']) && !empty(trim($infosUser['firstname']))) ? $infosUser['firstname'] : null;
+                    $_SESSION['user']['birthdate'] = (isset($infosUser['birthdate']) && !empty(trim($infosUser['birthdate']))) ? $infosUser['birthdate'] : null;
+                    $_SESSION['user']['gender'] = (isset($infosUser['gender']) && !empty(trim($infosUser['gender']))) ? $infosUser['gender'] : null;
+                    $_SESSION['favoriteRecipes'] = loadFavoritesFromFile($username); // charge les favoris depuis le fichier utilisateur
+
+                    // recopie les infos de session dans les cookies
+                    setcookie("usernameUser", (isset($_SESSION['user']['username']) ? $_SESSION['user']['username'] : "") , time()+3600*24);
+                    setcookie("lastnameUser", (isset($_SESSION['user']['lastname']) ? $_SESSION['user']['lastname'] : "") , time()+3600*24);
+                    setcookie("firstnameUser", (isset($_SESSION['user']['firstname']) ? $_SESSION['user']['firstname'] : "") , time()+3600*24);
+                    setcookie("birthdateUser", (isset($_SESSION['user']['birthdate']) ? $_SESSION['user']['birthdate'] : "") , time()+3600*24);
+                    setcookie("genderUser", (isset($_SESSION['user']['gender']) ? $_SESSION['user']['gender'] : "") , time()+3600*24);
+                    setcookie("favoriteRecipes", (isset($_SESSION['favoriteRecipes']) ? print_r($_SESSION['favoriteRecipes']) : "") , time()+3600*24);
+
+                    $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
+
+                }else{
+                    $messagesErrors[] = "Une erreur est survenue.";
+                }
             }
         }
     }else{ // Sinon (au cas ou l'action n'a pas ete trouvee)

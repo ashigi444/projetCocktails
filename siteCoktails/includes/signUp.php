@@ -31,20 +31,20 @@
         </label>
 
         <?php
-        $genderValue = isset($valueFields['signupForm']['sexe']) ? $valueFields['signupForm']['sexe'] : null;
-        $genderErrorClass = isset($classFields['signupForm']['sexe']) ? $classFields['signupForm']['sexe'] : null;
+        $genderValue = isset($valueFields['signupForm']['gender']) ? $valueFields['signupForm']['gender'] : null;
+        $genderErrorClass = isset($classFields['signupForm']['gender']) ? $classFields['signupForm']['gender'] : null;
         ?>
 
-        <span class="sexe-wrapper">
+        <span class="gender-wrapper">
             Vous&nbsp;êtes&nbsp;:
 
             <label for="signupFemale"
-                   class="sexe-radio <?php
-                   if(isset($classFields['signupForm']['sexe']) && $classFields['signupForm']['sexe'] == "error") {
-                       echo $classFields['signupForm']['sexe'];
+                   class="gender-radio <?php
+                   if(isset($classFields['signupForm']['gender']) && $classFields['signupForm']['gender'] == "error") {
+                       echo $classFields['signupForm']['gender'];
                    } ?>">
                 Femme
-                <input class="input-sexe-radio" type="radio" id="signupFemale" name="sexe" value="female"
+                <input class="input-gender-radio" type="radio" id="signupFemale" name="gender" value="female"
                     <?php if ($genderValue === "female") { ?>
                         checked="checked"
                     <?php } ?>
@@ -52,12 +52,12 @@
             </label>
 
             <label for="signupMale"
-                   class="sexe-radio <?php
-                   if(isset($classFields['signupForm']['sexe']) && $classFields['signupForm']['sexe'] == "error") {
-                       echo $classFields['signupForm']['sexe'];
+                   class="gender-radio <?php
+                   if(isset($classFields['signupForm']['gender']) && $classFields['signupForm']['gender'] == "error") {
+                       echo $classFields['signupForm']['gender'];
                    } ?>">
                Homme
-                <input class="input-sexe-radio" type="radio" id="signupMale" name="sexe" value="male"
+                <input class="input-gender-radio" type="radio" id="signupMale" name="gender" value="male"
                     <?php if ($genderValue === "male") { ?>
                         checked="checked"
                     <?php } ?>

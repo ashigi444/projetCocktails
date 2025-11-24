@@ -59,7 +59,7 @@ nav ul{
     padding:0;
 }
 
-nav button, nav a, nav .button-signup, .button-sub, .button-update{
+nav button, nav .buttonLinkPage, nav .button-signup, .button-sub, .button-update{
     color: dimgray;
     text-decoration: none;
     border: 1px solid lightgray;
@@ -142,24 +142,24 @@ fieldset legend {
     gap: 10px;
 }
 
-.sexe-wrapper {
+.gender-wrapper {
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-.sexe-radio {
+.gender-radio {
     display: inline;
     border-radius: 5px;
     border: 1px solid lightgray;
 }
 
-.sexe-radio .error {
+.gender-radio .error {
     background-color: #ffe3e3;
     border: 1px solid #c99;
 }
 
-.sexe-radio:hover, .input-sexe-radio:hover{
+.gender-radio:hover, .input-gender-radio:hover{
     cursor: pointer;
 }
 

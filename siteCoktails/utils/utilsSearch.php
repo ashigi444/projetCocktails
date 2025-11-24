@@ -75,24 +75,23 @@ function parseSearchQuery($query) {
     return $result;
 }
 
-
-function ingredientExistsInHierarchy($ingredient, $hierarchie) {
-    foreach (array_keys($hierarchie) as $key) {
-        if (strcasecmp($key, $ingredient) === 0) {
+function ingredientExistsInHierarchy($ingredient, $hierarchy) {
+    foreach (array_keys($hierarchy) as $key) {
+        if (strcmp($key, $ingredient) === 0) {
             return true;
         }
     }
     return false;
 }
-function getExactIngredientName($ingredient, $hierarchie) {
-    foreach (array_keys($hierarchie) as $key) {
-        if (strcasecmp($key, $ingredient) === 0) {
+
+function getExactIngredientName($ingredient, $hierarchy) {
+    foreach (array_keys($hierarchy) as $key) {
+        if (strcmp($key, $ingredient) === 0) {
             return $key;
         }
     }
     return $ingredient;
 }
-
 
 function recipeContainsIngredient($recipe, $ingredient, $hierarchy) {
 
@@ -100,7 +99,7 @@ function recipeContainsIngredient($recipe, $ingredient, $hierarchy) {
 
     foreach ($recipe['index'] as $ing) {
         foreach ($validIngredients as $validIngredient) {
-            if (strcasecmp($ing, $validIngredient) === 0) {
+            if (strcmp($ing, $validIngredient) === 0) {
                 return true;
             }
         }

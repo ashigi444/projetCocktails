@@ -47,6 +47,9 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 <button type="submit" class="button-update" id="updateLastname" name="action" value="updateLastname">
                     Modifier
                 </button>
+                <button type="submit" class="button-update" id="resetLastname" name="action" value="resetLastname">
+                    Reinitialiser
+                </button>
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -64,6 +67,9 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 <button type="submit" class="button-update" id="updateFirstname" name="action" value="updateFirstname">
                     Modifier
                 </button>
+                <button type="submit" class="button-update" id="resetFirstname" name="action" value="resetFirstname">
+                    Reinitialiser
+                </button>
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -80,26 +86,32 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 <button type="submit" class="button-update" id="updateBirthdate" name="action" value="updateBirthdate">
                     Modifier
                 </button>
+                <button type="submit" class="button-update" id="resetBirthdate" name="action" value="resetBirthdate">
+                    Reinitialiser
+                </button>
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
-                <span class="sexe-wrapper">Sexe&nbsp;:
+                <span class="gender-wrapper">Sexe&nbsp;:
                     <label for="female"
-                           class="sexe-radio <?php echo isset($classFields['sexe']) ? $classFields['sexe'] : ''; ?>">
+                           class="gender-radio <?php echo isset($classFields['gender']) ? $classFields['gender'] : ''; ?>">
                     Femme
-                        <input class="input-sexe-radio" type="radio" id="female" name="newSexe" value="female"
-                        <?php if ($infosUser['sexe']=="female") echo 'checked'; ?>>
+                        <input class="input-gender-radio" type="radio" id="female" name="newGender" value="female"
+                        <?php if ($infosUser['gender']=="female") echo 'checked'; ?>>
                     </label>
 
                     <label for="male"
-                           class="sexe-radio <?php echo isset($classFields['sexe']) ? $classFields['sexe'] : ''; ?>">
+                           class="gender-radio <?php echo isset($classFields['gender']) ? $classFields['gender'] : ''; ?>">
                     Homme
-                        <input class="input-sexe-radio" type="radio" id="male" name="newSexe" value="male"
-                        <?php if ($infosUser['sexe']=="male") echo 'checked'; ?>>
+                        <input class="input-gender-radio" type="radio" id="male" name="newGender" value="male"
+                        <?php if ($infosUser['gender']=="male") echo 'checked'; ?>>
                     </label>
                 </span>
-                <button type="submit" class="button-update" id="updateSexe" name="action" value="updateSexe">
+                <button type="submit" class="button-update" id="updateGender" name="action" value="updateGender">
                     Modifier
+                </button>
+                <button type="submit" class="button-update" id="resetGender" name="action" value="resetGender">
+                    Reinitialiser
                 </button>
             </form>
         </fieldset>
