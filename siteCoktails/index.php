@@ -203,7 +203,7 @@ if (isset($action)) { // Si une action a ete demandee, on cherche de quelle acti
                     setcookie("firstnameUser", (isset($_SESSION['user']['firstname']) ? $_SESSION['user']['firstname'] : "") , time()+3600*24);
                     setcookie("birthdateUser", (isset($_SESSION['user']['birthdate']) ? $_SESSION['user']['birthdate'] : "") , time()+3600*24);
                     setcookie("genderUser", (isset($_SESSION['user']['gender']) ? $_SESSION['user']['gender'] : "") , time()+3600*24);
-                    setcookie("favoriteRecipes", (isset($_SESSION['favoriteRecipes']) ? print_r($_SESSION['favoriteRecipes']) : "") , time()+3600*24);
+                    setcookie("favoriteRecipes", (isset($_SESSION['favoriteRecipes']) ? implode(",", $_SESSION['favoriteRecipes']) : "") , time()+3600*24);
 
                     $messages[] = "Connect&eacute;&nbsp;en tant que&nbsp;" . $_SESSION['user']['username'];
 
