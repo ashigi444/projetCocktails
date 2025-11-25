@@ -151,7 +151,7 @@ function loadFavoritesFromFile($username) {
         $content = file_get_contents($filename);
 
         // Extraire $infosUser du fichier
-        $tempFile = tempnam(sys_get_temp_dir(), 'user_');
+        $tempFile = tempnam(sys_get_temp_dir(), 'user_temp_');
         file_put_contents($tempFile, $content);
         include $tempFile;
         unlink($tempFile);
