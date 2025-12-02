@@ -26,7 +26,7 @@ if ($recipeId === null || !isset($Recettes[$recipeId])) {
     $estFavori = isFavorite($recipeId);
     $heartClass = $estFavori ? 'heart-full' : 'heart-empty';
     $heartSymbol = $estFavori ? '&#10084;' : '&#9825;';
-    $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=recipeDetail';
+    $toggleUrl = 'index.php?toggleFavorite=true&recipeId=' . $recipeId . '&page=recipeDetail';
 
     //parser les ingredients
     $ingredientsDetail = explode('|', $recipe['ingredients']);

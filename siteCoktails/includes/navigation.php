@@ -124,7 +124,7 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
                         $heartClass = $isFavorite ? 'heart-full' : 'heart-empty';
                         $heartSymbol = $isFavorite ? '&#10084;' /*coeur plein*/ : '&#9825;'; /*coeur vide*/
 
-                        $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=navigation';
+                        $toggleUrl = 'index.php?toggleFavorite=true&recipeId=' . $id . '&page=navigation';
                         if ($currentIngredient !== 'Aliment') {
                             $toggleUrl .= '&aliment=' . urlencode($currentIngredient);
                         }

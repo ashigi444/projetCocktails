@@ -32,16 +32,15 @@
     <!-- formulaire de recherche -->
     <?php require_once 'utils/utils.php' ?>
     <form method="get" action="index.php">
-        <label for="search">
-            <?php
-            $searchValue = isset($_GET['search']) ? $_GET['search'] : '';
-            ?>
-            <input id="search" type="text" name="search"
+        <label for="searchValue">
+            <input id="searchValue" type="text" name="searchValue"
                    placeholder="&quot;Jus de fruits&quot;"
-                   value="<?php echo replaceSearchByEntity("input", $searchValue); ?>"
+                    <?php if(isset($searchValue)) {?>
+                        value="<?php echo replaceSearchByEntity("input", $searchValue); ?>"
+                    <?php } ?>
             />
         </label>
-        <button type="submit" name="page" value="search">Rechercher</button>
+        <input class="button-sub" type="submit" name="search" value="Rechercher" />
     </form>
 
     <!-- zone de connexion ou profil-->
@@ -61,20 +60,21 @@
         <?php $redirectForm = (isset($page) && !empty(trim($page))) ? 'index.php?page='.$page : 'index.php'; ?>
         <form class="form-signin" method="post" action="<?php echo $redirectForm ?>">
             <?php if (isset($user) && !empty($user)) { ?>
-                <button type="submit" name="action" value="logout">Se d&eacute;connecter</button>
+                <!-- bouton de déconnexion -->
+                <input class="button-sub" type="submit" name="logout" value="Se&nbsp;d&eacute;connecter" />
             <?php } else { ?>
                 <label for="signin_username">
                     <input
-                        id="signin_username" type="text" name="username" placeholder="Identifiant" required="required"
-                        <?php
-                        // Si le username existe deja et qu'il est valide, on le reecrit
-                        if(isset($valueFields['signinForm']['username'])){ ?>
-                            value="<?php echo $valueFields['signinForm']['username']; ?>"
-                        <?php }
-                        // Si il a une class de style, on l'applique
-                        if(isset($classFields['signinForm']['username'])) { ?>
-                            class="<?php echo $classFields['signinForm']['username']; ?>"
-                        <?php } ?>
+                            id="signin_username" type="text" name="username" placeholder="Identifiant" required="required"
+                            <?php
+                            // Si le username existe deja et qu'il est valide, on le reecrit
+                            if(isset($valueFields['signinForm']['username'])){ ?>
+                                value="<?php echo $valueFields['signinForm']['username']; ?>"
+                            <?php }
+                            // Si il a une class de style, on l'applique
+                            if(isset($classFields['signinForm']['username'])) { ?>
+                                class="<?php echo $classFields['signinForm']['username']; ?>"
+                            <?php } ?>
                     />
                 </label>
                 <label for="signin_password">
@@ -85,7 +85,8 @@
                             <?php } ?>
                     />
                 </label>
-                <button class="button-sub" type="submit" name="action" value="signin">Connexion</button>
+                <!-- bouton de connexion -->
+                <input class="button-sub" type="submit" name="signin" value="Se&nbsp;connecter" />
             <?php } ?>
         </form>
     </div>

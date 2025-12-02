@@ -6,15 +6,15 @@
 require_once 'resources/Donnees.inc.php';
 require_once 'utils/utilsSearch.php';
 
-if (isset($search) && !empty(trim($search))) { ?>
+if (isset($searchValue) && !empty(trim($searchValue))) { ?>
     <p>
         Votre requ&ecirc;te&nbsp;:&nbsp;&quot;<strong>
-            <?php echo replaceSearchByEntity("text", $search); ?>
+            <?php echo replaceSearchByEntity("text", $searchValue); ?>
         </strong>&quot;
     </p>
 
     <?php
-    $parsed = parseSearchQuery($search);
+    $parsed = parseSearchQuery($searchValue);
 
     if ($parsed['error'] !== null) { ?>
         <div class="message message-errors">
@@ -146,7 +146,7 @@ if (isset($search) && !empty(trim($search))) { ?>
                         $heartClass = $isFavorites ? 'heart-full' : 'heart-empty';
                         $heartSymbol = $isFavorites ? '&#10084;' : '&#9825;';
 
-                        $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $id . '&page=search&search=' . urlencode($search);
+                        $toggleUrl = 'index.php?toggleFavorite=true&recipeId=' . $id . '&search=Rechercher&searchValue=' . urlencode($searchValue);
                         ?>
                         <?php $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $id; ?>
                         <div class="cocktail-card">

@@ -97,8 +97,6 @@
             />
         </label>
 
-        <button class="button-sub" type="submit" name="action" value="signup">
-            Inscription
-        </button>
+        <input class="button-sub" type="submit" name="signup" value="Inscription" />
     </form>
 </fieldset>

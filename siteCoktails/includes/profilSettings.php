@@ -44,12 +44,8 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                             <?php } ?>
                     />
                 </label>
-                <button type="submit" class="button-update" id="updateLastname" name="action" value="updateLastname">
-                    Modifier
-                </button>
-                <button type="submit" class="button-update" id="resetLastname" name="action" value="resetLastname">
-                    Reinitialiser
-                </button>
+                <input class="button-update" type="submit" name="updateLastname" value="Modifier" />
+                <input class="button-update" type="submit" name="resetLastname" value="Reinitialiser" />
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -64,12 +60,9 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                             <?php } ?>
                     />
                 </label>
-                <button type="submit" class="button-update" id="updateFirstname" name="action" value="updateFirstname">
-                    Modifier
-                </button>
-                <button type="submit" class="button-update" id="resetFirstname" name="action" value="resetFirstname">
-                    Reinitialiser
-                </button>
+
+                <input class="button-update" type="submit" name="updateFirstname" value="Modifier" />
+                <input class="button-update" type="submit" name="updateFirstname" value="Reinitialiser" />
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -83,12 +76,8 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                             <?php } ?>
                     />
                 </label>
-                <button type="submit" class="button-update" id="updateBirthdate" name="action" value="updateBirthdate">
-                    Modifier
-                </button>
-                <button type="submit" class="button-update" id="resetBirthdate" name="action" value="resetBirthdate">
-                    Reinitialiser
-                </button>
+                <input class="button-update" type="submit" name="updateBirthdate" value="Modifier" />
+                <input class="button-update" type="submit" name="resetBirthdate" value="Reinitialiser" />
             </form>
 
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -107,12 +96,8 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                         <?php if ($infosUser['gender']=="male") echo 'checked'; ?>>
                     </label>
                 </span>
-                <button type="submit" class="button-update" id="updateGender" name="action" value="updateGender">
-                    Modifier
-                </button>
-                <button type="submit" class="button-update" id="resetGender" name="action" value="resetGender">
-                    Reinitialiser
-                </button>
+                <input class="button-update" type="submit" name="updateGender" value="Modifier" />
+                <input class="button-update" type="submit" name="resetGender" value="Reinitialiser" />
             </form>
         </fieldset>
 

@@ -1,12 +1,12 @@
 <?php
 ?>
-<h2>Recettes pr&eacute;f&eacute;r&eacute;es</h2>
+    <h2>Recettes pr&eacute;f&eacute;r&eacute;es</h2>
 
 <?php
 include_once('resources/Donnees.inc.php');
 require_once('utils/utilsFavorites.php');
 
-// recup de l'username
+// recup du username
 $username = isset($_SESSION['user']['username']) ? $_SESSION['user']['username'] : null;
 
 // recup les favoris
@@ -29,7 +29,7 @@ if (count($favorites) > 0) { ?>
             if (!file_exists($imagePath)) {
                 $imagePath = 'resources/Photos/default.jpg';
             }
-            $toggleUrl = 'index.php?action=toggleFavorite&recipeId=' . $recipeId . '&page=favoriteRecipes';
+            $toggleUrl = 'index.php?toggleFavorite=true&recipeId=' . $recipeId . '&page=favoriteRecipes';
             $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $recipeId;
             ?>
             <div class="cocktail-card">
