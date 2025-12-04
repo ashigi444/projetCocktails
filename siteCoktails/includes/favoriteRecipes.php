@@ -12,26 +12,29 @@ $username = isset($_SESSION['user']['username']) ? $_SESSION['user']['username']
 // recup les favoris
 $favorites = getFavorites();
 
+// affichage des favoris
 if (count($favorites) > 0) { ?>
     <p>Vous avez <strong><?php echo count($favorites); ?></strong> recette(s) dans vos favoris.</p>
-
+    <!-- liste des favoris -->
     <div class="liste-recettes">
         <?php
         foreach ($favorites as $recipeId) {
             if (!isset($Recettes[$recipeId])) {
                 continue;
             }
-
+            // récupération de l'image
             $recipe = $Recettes[$recipeId];
             $imageName = makeFilenameImage($recipe['titre']);
             $imagePath = 'resources/Photos/' . $imageName;
 
+            // verifier si l'image existe
             if (!file_exists($imagePath)) {
                 $imagePath = 'resources/Photos/default.jpg';
             }
             $toggleUrl = 'index.php?toggleFavorite=true&recipeId=' . $recipeId . '&page=favoriteRecipes';
             $detailUrl = 'index.php?page=recipeDetail&recipeId=' . $recipeId;
             ?>
+            <!-- affichage du titre du cocktail + bouton favori -->
             <div class="cocktail-card">
                 <div class="card-header">
                     <a href="<?php echo $detailUrl; ?>" class="cocktail-title"><?php echo $recipe['titre']; ?></a>
@@ -39,9 +42,11 @@ if (count($favorites) > 0) { ?>
                         &#10084;
                     </a>
                 </div>
+                <!-- affichage de l'image -->
                 <div class="card-image">
                     <img src="<?php echo $imagePath; ?>" alt="<?php echo $recipe['titre']; ?>">
                 </div>
+                <!-- liste des ingrédients -->
                 <ul class="ingredients-list">
                     <?php foreach ($recipe['index'] as $ing) { ?>
                         <li>

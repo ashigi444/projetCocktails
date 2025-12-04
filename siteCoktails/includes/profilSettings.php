@@ -6,6 +6,7 @@ require_once 'utils/utils.php';
 $username = isset($user) && isset($user['username']) ? $user['username'] : null;
 ?>
 
+<!-- Affichage des informations du profil -->
 <?php if (isset($username) && checkAccountAlreadyExists($username)) {
     $infosUser = loadUserInfos($username);
     if (isset($infosUser) && is_array($infosUser) && !empty($infosUser)) { ?>
@@ -29,7 +30,7 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 </label>
             </form>
         </fieldset>
-
+        <!--- Informations personnelles -->
         <fieldset>
             <legend>Informations Personnelles</legend>
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
@@ -60,11 +61,11 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                             <?php } ?>
                     />
                 </label>
-
+                <!--- Boutons permettant de modifier ou réinitialiser les champs du formulaire -->
                 <input class="button-update" type="submit" name="updateFirstname" value="Modifier" />
                 <input class="button-update" type="submit" name="updateFirstname" value="Reinitialiser" />
             </form>
-
+            <!--- Section de remplissage de la date de naissance -->
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
                 <label for="newBirthdate">Date de naissance&nbsp;:
                     <input type="date" name="newBirthdate" id="newBirthdate"
@@ -79,7 +80,7 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 <input class="button-update" type="submit" name="updateBirthdate" value="Modifier" />
                 <input class="button-update" type="submit" name="resetBirthdate" value="Reinitialiser" />
             </form>
-
+            <!--- Section de remplissage du sexe -->
             <form class="form-settings" method="POST" action="index.php?page=profilSettings">
                 <span class="gender-wrapper">Sexe&nbsp;:
                     <label for="female"
@@ -100,10 +101,11 @@ $username = isset($user) && isset($user['username']) ? $user['username'] : null;
                 <input class="button-update" type="submit" name="resetGender" value="Reinitialiser" />
             </form>
         </fieldset>
-
+    <!--- Affichage d'un message d'erreur si une erreur est survenue lors du chargement des informations -->
     <?php } else { ?>
         <p>Un probl&egrave;me est survenu avec le chargement de vos informations personnelles...</p>
     <?php } ?>
 <?php } else { ?>
+    <!--- Affichage d'un message d'erreur si l'utilisateur n'est pas connecté -->
     <p>Vous n&apos;&ecirc;tes pas connect&eacute;.</p>
 <?php } ?>

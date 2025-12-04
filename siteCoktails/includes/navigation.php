@@ -16,7 +16,7 @@ if(isset($Hierarchie)) {
 
 $validIngredients = getIngredientsHierarchy($currentIngredient, $Hierarchie);
 
-// fil d'ariane 
+// fil d'ariane
 if (isset($_GET['path'])) {
     $pathString = $_GET['path'];
     $breadcrumbPath = !empty($pathString) ? explode('>', $pathString) : array('Aliment');
@@ -38,7 +38,9 @@ if (isset($Hierarchie[$currentIngredient]['sous-categorie'])) {
 }
 ?>
 
+<!-- Navigation -->
 <div class="navigation-container">
+  <!-- Sidebar -->
     <div class="navigation-sidebar">
         <h3>Aliment courant</h3>
 
