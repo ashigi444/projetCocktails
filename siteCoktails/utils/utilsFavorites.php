@@ -2,19 +2,17 @@
 require_once('utils/utils.php');
 
 /**
- * Fonctions de gestion des recettes favorites
- * La session est la source de verite, le fichier sert a la persistance
- */
-
-/**
  * Recupere les favoris de l'utilisateur (toujours depuis la session)
+ * La session est la source de verite, le fichier sert a la persistance
  *
  * @return array Tableau des IDs de recettes favorites
  */
 function getFavorites() {
+    // Si le tableau de favoris existe deja en session, on le renvoie
     if (isset($_SESSION['favoriteRecipes'])) {
         return $_SESSION['favoriteRecipes'];
     }
+    // Sinon on renvoie un tableau vide
     return array();
 }
 
@@ -25,7 +23,9 @@ function getFavorites() {
  * @return bool True si la recette est favorite
  */
 function isFavorite($recipeId) {
+    // Recupere la liste des favoris depuis la session
     $favorites = getFavorites();
+    // Verifie si l'id de la recette est present dans la liste
     return in_array($recipeId, $favorites);
 }
 
@@ -37,12 +37,15 @@ function isFavorite($recipeId) {
  * @return bool True si l'ajout a reussi
  */
 function addFavorite($recipeId, $username = null) {
+    // Recupere la liste actuelle des favoris
     $favorites = getFavorites();
 
+    // On n'ajoute l'id que si il n'est pas deja present
     if (!in_array($recipeId, $favorites)) {
         $favorites[] = $recipeId;
     }
 
+    // Sauvegarde en session (et eventuellement en fichier si username non null)
     return saveFavorites($favorites, $username);
 }
 
@@ -54,14 +57,19 @@ function addFavorite($recipeId, $username = null) {
  * @return bool True si la suppression a reussi
  */
 function removeFavorite($recipeId, $username = null) {
+    // Recupere la liste actuelle des favoris
     $favorites = getFavorites();
 
+    // Recherche la position de la recette dans le tableau
     $key = array_search($recipeId, $favorites);
     if ($key !== false) {
+        // Supprime l'entree correspondante
         unset($favorites[$key]);
+        // Reindexter le tableau
         $favorites = array_values($favorites); // Reindexter le tableau
     }
 
+    // Sauvegarde la nouvelle liste
     return saveFavorites($favorites, $username);
 }
 
@@ -73,10 +81,12 @@ function removeFavorite($recipeId, $username = null) {
  * @return bool Nouveau statut (true si maintenant favori)
  */
 function toggleFavorite($recipeId, $username = null) {
+    // Si la recette est deja favorite, on la supprime de la liste
     if (isFavorite($recipeId)) {
         removeFavorite($recipeId, $username);
         return false;
     } else {
+        // Sinon on l'ajoute aux favoris
         addFavorite($recipeId, $username);
         return true;
     }
@@ -98,6 +108,7 @@ function saveFavorites($favorites, $username = null) {
         return saveFavoritesToFile($favorites, $username);
     }
 
+    // Si pas d'utilisateur connecte, la sauvegarde en session suffit
     return true;
 }
 
@@ -109,8 +120,10 @@ function saveFavorites($favorites, $username = null) {
  * @return bool True si la sauvegarde a reussi
  */
 function saveFavoritesToFile($favorites, $username) {
+    // Recupere le nom de fichier associe a cet utilisateur
     $filename = makeFilenameUser($username);
 
+    // Si le fichier n'existe pas, on ne peut pas sauvegarder
     if (!file_exists($filename)) {
         return false;
     }
@@ -124,6 +137,7 @@ function saveFavoritesToFile($favorites, $username) {
     include $tempFile;
     unlink($tempFile);
 
+    // Si les informations utilisateur ne sont pas definies, on ne peut pas mettre a jour
     if (!isset($infosUser)) {
         return false;
     }
@@ -144,6 +158,7 @@ function saveFavoritesToFile($favorites, $username) {
  * @return array soit la liste de recettes, soit une liste vide
  */
 function loadFavoritesFromFile($username) {
+    // Nom du fichier utilisateur
     $filename=makeFilenameUser($username);
 
     if (file_exists($filename)) {
@@ -163,9 +178,11 @@ function loadFavoritesFromFile($username) {
 
             // Union des deux tableaux (sans doublons)
             $merged = array_unique(array_merge($sessionFavorites, $fileFavorites));
+            // Reindexe les valeurs et renvoie la liste fusionnee
             return array_values($merged);
         }
     }
+    // Si pas de fichier ou pas de favoris, on renvoie un tableau vide
     return [];
 }
 ?>

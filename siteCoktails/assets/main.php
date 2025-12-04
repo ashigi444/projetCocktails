@@ -19,6 +19,7 @@
         </div>
     <?php }
 
+    // Affichage de la page si il y en a une choisie
     if(isset($page)){
         $file='includes/'.$page.'.php';
         if(file_exists($file)){

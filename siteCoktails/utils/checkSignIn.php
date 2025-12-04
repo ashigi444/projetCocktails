@@ -19,86 +19,127 @@ require_once "utils/utils.php";
  */
 function checkSignIn($username, $password)
 {
+    // tableau pour stocker les messages classiques
     $messages = [];
+
+    // tableau pour stocker les messages d'erreurs
     $messagesErrors = [];
+
+    // booleen global pour savoir si la connexion est correcte
     $allCorrect=true;
+
+    // tableau pour preremplir les champs des formulaires si besoin
     $valueFields=['signinForm'=>[], 'signupForm'=>[]];
+
+    // tableau pour appliquer des classes CSS aux champs (erreurs)
     $classFields=['signinForm'=>[], 'signupForm'=>[]];
+
+    // page par defaut, ou page specifique si definie dans l'URL
     $page=isset($_GET['page']) ? $_GET['page'] : 'navigation';
 
+    // verification du champ username
     $validUsername = checkUsernameField($username);
+
+    // verification du champ password
     $validPassword = checkPasswordField($password);
+
+    // booleen qui dit si les deux champs sont valides
     $validFields = $validUsername && $validPassword;
 
-    if ($validFields) { // If fields are valid
+    if ($validFields) { // Si les champs sont corrects
+        // verification dans les fichiers si la combinaison identifiant / mot de passe existe
         $validConnection = checkConnection($username, $password);
+
         if (!is_array($validConnection)) {
-            // Redirecting to inscription form...
+            // Si le retour n'est pas un tableau, alors la connexion a echoue (aucun fichier correspondant par ex.)
+
+            // Redirection vers le formulaire d'inscription
             $valueFields['signupForm']['username'] = $username;
-            // $passwordFormSignup=$validity['field']['password'] ? $password  null // A voir si on autorise la recopie du mot de passe dans les champs
             $page = "signUp";
-            if ($validConnection == 'undefined_file') { // If the account file doesn't exists
+
+            if ($validConnection == 'undefined_file') { // Si le fichier de compte n'existe pas
+                // ajout d'un message specifique pour dire que l'identifiant n'est pas trouve
                 $messagesErrors[] = "
-                    Identifiant inexistant, veuillez cr&eacute;er un compte
+                    Identifiant inexistant, veuillez cre&eacute;er un compte
                     s&apos;il-vous-pla&icirc;t.
                 ";
                 $allCorrect = false;
-            } else if ($validConnection == 'undefined_infos') { // If the table infosUser doesn't exists
+
+            } else if ($validConnection == 'undefined_infos') { // Si le tableau infosUser n'existe pas
+                // erreurs liees a une mauvaise lecture ou structure du fichier utilisateur
                 $messagesErrors[] = "Erreur lors de la r&eacute;cup&eacute;ration de vos informations...";
                 $messagesErrors[] = "Veuillez recr&eacute;er un compte s&apos;il-vous-pla&icirc;t.";
                 $allCorrect = false;
+
             } else {
+                // cas generique si on ne sait pas precisement ce qui a echoue
                 $messagesErrors[] = "Erreur lors du traitement de vos informations...";
                 $messagesErrors[] = "Veuillez r&eacute;essayer s&apos;il-vous-pla&icirc;t.";
                 $allCorrect = false;
             }
         } else {
+
+            // Si on obtient un tableau, alors il contient les resultats de la verification username/password
             if (isset($validConnection['username']) && isset($validConnection['password'])) {
-                if (!$validConnection['username']) { // If username_form != username_file
-                    $classFields['signinForm']['username'] = "error";
-                    $messagesErrors[] = "Identifiant incorrect";
+
+                // verification du username (correspondance fichier)
+                if (!$validConnection['username']) { // Si username_form != username_file
+                    $classFields['signinForm']['username'] = "error"; // applique une classe error
+                    $messagesErrors[] = "Identifiant incorrect"; // message d'erreur
                     $allCorrect = false;
                 } else {
+                    // si bon identifiant, on preremplit le champ username
                     $valueFields['signinForm']['username'] = $username;
                 }
 
-                if (!$validConnection['password']) { // If password_form != password_file
-                    $classFields['signinForm']['password'] = "error";
-                    $messagesErrors[] = "Mot de passe incorrect";
+                // verification du mot de passe
+                if (!$validConnection['password']) { // Si password_form != password_file
+                    $classFields['signinForm']['password'] = "error"; // applique une classe error
+                    $messagesErrors[] = "Mot de passe incorrect"; // message d'erreur
                     $allCorrect = false;
-                } // password not recopied in form
+                } // Mot de passe non recopie dans le formulaire
+
             } else {
-                // Redirecting to inscription form...
+                // si les index username/password ne sont pas presents -> probleme de fichier utilisateur
+
+                // Redirection vers le formulaire d'inscription
                 $valueFields['signupForm']['username'] = $username;
                 $page = "signUp";
 
+                // messages d'erreurs liés aux informations non recuperables
                 $messagesErrors[] = "Erreur lors de la r&eacute;cup&eacute;ration de vos informations...";
                 $messagesErrors[] = "Veuillez recr&eacute;er un compte s&apos;il-vous-pla&icirc;t.";
                 $allCorrect = false;
             }
         }
-    }else{
+    } else {
+
+        // Cas ou au moins un des champs est invalide
+
         if (!$validUsername) {
-            $classFields['signinForm']['username'] = "error";
-            $messagesErrors[] = "Identifiant invalide.";
+            $classFields['signinForm']['username'] = "error"; // classe error sur le champ username
+            $messagesErrors[] = "Identifiant invalide."; // message associe
             $allCorrect = false;
         }
+
         if (!$validPassword) {
-            $classFields['signinForm']['password'] = "error";
-            $messagesErrors[] = "Mot de passe invalide.";
+            $classFields['signinForm']['password'] = "error"; // classe error sur le champ password
+            $messagesErrors[] = "Mot de passe invalide."; // message associe
             $allCorrect = false;
-            if ($validUsername)// Recuperation du username pour le champ du formulaire
-                $valueFields['signinForm']['username'] = $username;
+
+            if ($validUsername) // Recuperation du username pour le champ du formulaire
+                $valueFields['signinForm']['username'] = $username; // on garde la saisie correcte
         }
     }
 
+    // Retour de toutes les informations necessaires pour la suite du traitement dans index.php
     return [
-        'messages' => $messages,
-        'messagesErrors' => $messagesErrors,
-        'correctConnection' => $allCorrect,
-        'valueFields' => $valueFields,
-        'classFields' => $classFields,
-        'page' => $page
+        'messages' => $messages, // messages generaux
+        'messagesErrors' => $messagesErrors, // messages d'erreurs
+        'correctConnection' => $allCorrect, // booleen final de validation
+        'valueFields' => $valueFields, // valeurs a preremplir dans les formulaires
+        'classFields' => $classFields, // classes CSS a appliquer
+        'page' => $page // page vers laquelle on renvoie
     ];
 }
 ?>
